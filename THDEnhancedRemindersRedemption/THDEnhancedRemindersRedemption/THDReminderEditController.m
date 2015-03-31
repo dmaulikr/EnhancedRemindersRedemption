@@ -48,6 +48,11 @@
     return self;
 }
 
+-(void)viewDidLoad
+{
+    
+}
+
 //dismiss the keyboard
 -(void)dismissKeyboard
 {
