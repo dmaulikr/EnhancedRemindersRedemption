@@ -19,4 +19,6 @@
 - (void)saveContext;
 - (NSURL *)applicationDocumentsDirectory;
 
+-(NSFetchedResultsController*) readFromTable:(NSString*)entityName
+
 @end
