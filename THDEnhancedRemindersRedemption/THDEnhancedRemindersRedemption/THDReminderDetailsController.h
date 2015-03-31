@@ -7,9 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "THDReminder.h"
 
 @interface THDReminderDetailsController : UIViewController
+{
+    THDReminder* _reminder;
+}
 
--(id) initWithID:(int)ID;
+- (id)initWithReminder:(THDReminder*)reminder;
 
 @end

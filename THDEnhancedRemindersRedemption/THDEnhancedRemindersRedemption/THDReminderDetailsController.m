@@ -17,12 +17,11 @@
 
 @implementation THDReminderDetailsController
 
--(id) initWithID:(int)ID
+-(id) initWithReminder:(THDReminder*)reminder
 {
     self = [super init];
     if (self) {
-        _ID = ID;
-        //NSManagedObject* reminder = [THDAppDelegate readFromTable:@"THDReminder" byID:_ID];
+        _reminder = reminder;
     }
     return self;
 }
@@ -46,6 +45,9 @@
     UIBarButtonItem *editButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(editButtonPressed)];
     [[self navigationItem] setRightBarButtonItem:editButton];
     
+    // Setup up Table View
+    
+    
     NSLog(@"Loaded");
 }
 
@@ -57,7 +59,7 @@
 
 -(void)editButtonPressed
 {
-    UIViewController *controller = [[THDReminderEditController alloc] init];
+    UIViewController *controller = [[THDReminderEditController alloc] initWithReminder:_reminder];
     [[self navigationController] pushViewController:controller animated:YES];
 }
 

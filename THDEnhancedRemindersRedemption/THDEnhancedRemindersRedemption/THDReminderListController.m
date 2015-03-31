@@ -23,11 +23,13 @@
     return [self initWithStyle:UITableViewStylePlain];
 }
 
-- (id)initWithStyle:(UITableViewStyle)style
+- (id)initWithReminders:(NSArray*)array
 {
-    self = [super initWithStyle:style];
+    self = [super initWithStyle:UITableViewStylePlain];
     if (self) {
         //[self setEditing:YES animated:YES];
+        _reminders = array;
+        
     }
     return self;
 }
@@ -53,7 +55,7 @@
 
 -(void)createNewButtonPressed
 {
-    UIViewController *controller = [[THDReminderEditController alloc]init];
+    UIViewController *controller = [[THDReminderEditController alloc] initWithReminder:nil];
     [[self navigationController] pushViewController:controller animated:YES];
 }
 
@@ -74,16 +76,25 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-    return 20;
+    return [_reminders count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString* myCellID = @"CellID";
-    THDReminderTableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:myCellID];
     
-    #warning ID is hard-coded
-    cell = [[THDReminderTableViewCell alloc] initWithID:0  reuseIdentifier:myCellID];
+    //#warning ID is hard-coded
+    //cell = [[THDReminderTableViewCell alloc] initWithID:0  reuseIdentifier:myCellID];
+    
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:myCellID];
+    if(cell == nil)
+    {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:myCellID];
+    }
+    
+    // Configure the cell...
+    THDReminder* reminder = _reminders[[indexPath row]];
+    [[cell textLabel] setText:[reminder titleText]];
     
     return cell;
 }
