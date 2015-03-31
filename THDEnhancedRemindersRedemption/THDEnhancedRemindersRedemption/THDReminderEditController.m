@@ -27,6 +27,9 @@
 - (IBAction)remindAfterEditDidBegin:(id)sender;
 - (IBAction)remindByEditDidBegin:(id)sender;
 
+//save the reminder to the database
+-(void)save;
+
 //dismiss the keyboard when the background is touched
 - (void)dismissKeyboard;
 @end
@@ -50,7 +53,14 @@
 
 -(void)viewDidLoad
 {
-    
+    [super viewDidLoad];
+    UIBarButtonItem *saveButton = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(save)];
+    [[self navigationItem]setRightBarButtonItem:saveButton];
+}
+
+-(void)save
+{
+    [[self navigationController]popViewControllerAnimated:YES];
 }
 
 //dismiss the keyboard
