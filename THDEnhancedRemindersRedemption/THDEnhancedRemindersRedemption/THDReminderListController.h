@@ -1,13 +1,13 @@
 //
 //  THDReminderListController.h
-//  THDEnhancedRemindersRedemption
+//  EnhancedReminders
 //
-//  Created by Adam LeBlanc on 2015-03-31.
-//  Copyright (c) 2015 Team Hipster Droid. All rights reserved.
+//  Created by iOS Developer on 2015-03-12.
+//  Copyright (c) 2015 UPEICS. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
 
-@interface THDReminderListController : UITableViewController
+@interface THDReminderListController : UITableViewController <UITableViewDelegate, UITableViewDataSource>
 
 @end
