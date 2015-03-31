@@ -7,14 +7,21 @@
 //
 
 #import "THDReminderTableViewCell.h"
+#import "THDAppDelegate.h"
 
 @implementation THDReminderTableViewCell
 
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+-(id) initWithID:(int)ID reuseIdentifier:(NSString *)reuseIdentifier
 {
-    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+    self = [super initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:reuseIdentifier];
     if (self) {
-        // Initialization code
+        _ID = ID;
+        //NSManagedObject* reminder = [THDAppDelegate readFromTable:@"THDReminder" byID:_ID];
+        
+        [[self textLabel] setText:@"Title"];
+        [[self detailTextLabel] setText:[NSString stringWithFormat:@"ID: %d", _ID]];
+        [self setAccessoryType:UITableViewCellAccessoryDetailButton];
+        //[[self imageView] setImage:[UIImage imageNamed:@"puppy.jpg"]];
     }
     return self;
 }

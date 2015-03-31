@@ -10,6 +10,7 @@
 #import "THDReminderDetailsController.h"
 #import "THDReminderEditController.h"
 #import "THDReminder.h"
+#import "THDReminderTableViewCell.h"
 
 @interface THDReminderListController ()
 
@@ -78,18 +79,11 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *myCellID = @"CellID";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:myCellID];
+    static NSString* myCellID = @"CellID";
+    THDReminderTableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:myCellID];
     
-    if(cell == nil)
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:myCellID];
-    
-    //configure cell
-    //THDReminder *reminder = [_reminders objectAtIndex:[indexPath row]];
-    [[cell textLabel] setText:@"Title"];
-    [[cell detailTextLabel] setText:@"Description"];
-    [cell setAccessoryType:UITableViewCellAccessoryDetailButton];
-#warning Hook up images
+    #warning ID is hard-coded
+    cell = [[THDReminderTableViewCell alloc] initWithID:0  reuseIdentifier:myCellID];
     
     return cell;
 }
@@ -97,7 +91,6 @@
 -(void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath
 {
     //redirect to the THDReminderDetailsController initializing using the ID for the selected row
-#warning Pass reminder over to details viewer
     UIViewController *next = [[THDReminderDetailsController alloc] init];
     
     if(next != nil)

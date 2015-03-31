@@ -10,4 +10,6 @@
 
 @interface THDReminderDetailsController : UIViewController
 
+-(id) initWithID:(int)ID;
+
 @end

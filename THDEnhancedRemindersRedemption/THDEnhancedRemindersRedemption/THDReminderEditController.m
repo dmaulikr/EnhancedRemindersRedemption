@@ -10,12 +10,25 @@
 #import "THDReminder.h"
 
 @interface THDReminderEditController ()
-@property NSDate *triggerBeforeTime;
-@property NSDate *triggerAfterTime;
--(void)updateBeforeText:(id)sender;
--(void)dismissKeyboard;
--(void)updateAfterText:(id)sender;
--(void)saveButtonPressed;
+//Text fields
+@property (strong, nonatomic) IBOutlet UITextField *titleTextField;
+@property (strong, nonatomic) IBOutlet UITextView *descriptionTextField;
+@property (strong, nonatomic) IBOutlet UITextField *remindAfterTextField;
+@property (strong, nonatomic) IBOutlet UITextField *remindByTextField;
+@property (strong, nonatomic) IBOutlet UITextField *reminderLocationTextField;
+//before and after dates
+@property (strong, nonatomic) NSDate *remindAfterDate;
+@property (strong, nonatomic) NSDate *remindByDate;
+
+//callback methods to change date fields when datepicker changes
+- (void)updateRemindAfterTextField:(id)sender;
+- (void)updateRemindByTextField:(id)sender;
+//callbacks to display datePicker instead of keyboard
+- (IBAction)remindAfterEditDidBegin:(id)sender;
+- (IBAction)remindByEditDidBegin:(id)sender;
+
+//dismiss the keyboard when the background is touched
+- (void)dismissKeyboard;
 @end
 
 @implementation THDReminderEditController
@@ -24,95 +37,64 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
+        //listen for touches outside of textfield, and call the
+        //dismisskeyboard  method when happens
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc]
                                        initWithTarget:self
-                                       action:@selector(dismissKeyboard)];
+                                    action:@selector(dismissKeyboard)];
         
-        [self.view addGestureRecognizer:tap];
+       [self.view addGestureRecognizer:tap];
     }
     return self;
 }
 
+-(void)viewDidLoad
+{
+    
+}
+
+//dismiss the keyboard
 -(void)dismissKeyboard
 {
-    [_triggerBeforeText resignFirstResponder];
-    [_triggerAfterText resignFirstResponder];
-    [_desctiptionText resignFirstResponder];
-    [_titleText resignFirstResponder];
+    [_titleTextField resignFirstResponder];
+    [_descriptionTextField resignFirstResponder];
+    [_remindAfterTextField resignFirstResponder];
+    [_remindByTextField resignFirstResponder];
+    [_reminderLocationTextField resignFirstResponder];
 }
 
-//Change date field when date picker is spun
--(void)updateBeforeText:(id)sender
+
+- (IBAction)remindAfterEditDidBegin:(id)sender
 {
-    UIDatePicker *picker = (UIDatePicker*)self.triggerBeforeText.inputView;
-    self.triggerBeforeText.text = [NSString stringWithFormat:@"%@",picker.date];
-    _triggerBeforeTime = picker.date;
-}
-
--(void)updateAfterText:(id)sender
-{
-    UIDatePicker *picker = (UIDatePicker*)self.triggerAfterText.inputView;
-    self.triggerAfterText.text = [NSString stringWithFormat:@"%@",picker.date];
-    _triggerAfterTime = picker.date;
-}
-
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    [self setTitle:@"Edit"];
-    UIBarButtonItem *saveButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(saveButtonPressed)];
-    [[self navigationItem] setRightBarButtonItem:saveButton];
-    
-    // Do any additional setup after loading the view from its nib.
-}
-//- (IBAction)triggerAfter:(id)sender {
-//    NSLog(@"Here");
-//    UIDatePicker *datePicker = [[UIDatePicker alloc] init];
-//    datePicker.datePickerMode = UIDatePickerModeDate;
-//    //[datePicker addTarget:self action:@selector(datePickerValueChanged:) forControlEvents:UIControlEventValueChanged];
-//    //datePicker.tag = indexPath.row;
-//    _triggerBeforeText.inputView = datePicker;
-//}
-//- (IBAction)triggerBy:(id)sender {
-//}
-
-//save button pressed. Save reminder
--(void)saveButtonPressed
-{
-    
-}
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
--(BOOL)textFieldShouldReturn:(UITextField *)textField
-{
-    [textField resignFirstResponder];
-    return YES;
-}
-
-//Display datepicker instead of keyboard
-- (IBAction)byTimeDidBeginEdit:(id)sender {
-    UIDatePicker *datePicker = [[UIDatePicker alloc]init];
-    [datePicker setDate:[NSDate date]];
-    [datePicker addTarget:self action:@selector(updateBeforeText:) forControlEvents:UIControlEventValueChanged];
-    [self.triggerBeforeText setInputView:datePicker];
-    [self updateBeforeText:sender];
-}
-
-- (IBAction)afterTimeDidBeginEdit:(id)sender {
     
     UIDatePicker *datePicker = [[UIDatePicker alloc]init];
     [datePicker setDate:[NSDate date]];
-    [datePicker addTarget:self action:@selector(updateAfterText:) forControlEvents:UIControlEventValueChanged];
-    [self.triggerAfterText setInputView:datePicker];
-    [self updateAfterText:sender];
+    [datePicker addTarget:self action:@selector(updateRemindAfterTextField:) forControlEvents:UIControlEventValueChanged];
+    [self.remindAfterTextField setInputView:datePicker];
+    [self updateRemindAfterTextField:sender];
 }
 
-- (IBAction)deleteAction:(id)sender {
+- (void)updateRemindAfterTextField:(id)sender
+{
+    UIDatePicker *picker = (UIDatePicker*)self.remindAfterTextField.inputView;
+    self.remindAfterTextField.text = [NSString stringWithFormat:@"%@",picker.date];
+    _remindAfterDate = picker.date;
+}
+
+- (IBAction)remindByEditDidBegin:(id)sender
+{
+    UIDatePicker *datePicker = [[UIDatePicker alloc]init];
+    [datePicker setDate:[NSDate date]];
+    [datePicker addTarget:self action:@selector(updateRemindByTextField:) forControlEvents:UIControlEventValueChanged];
+    [self.remindByTextField setInputView:datePicker];
+    [self updateRemindAfterTextField:sender];
+}
+
+-(void)updateRemindByTextField:(id)sender
+{
+    UIDatePicker *picker = (UIDatePicker*)self.remindByTextField.inputView;
+    self.remindByTextField.text = [NSString stringWithFormat:@"%@",picker.date];
+    _remindByDate = picker.date;
 }
 
 @end
