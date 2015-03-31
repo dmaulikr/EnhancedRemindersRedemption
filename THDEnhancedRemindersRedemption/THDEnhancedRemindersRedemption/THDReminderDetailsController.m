@@ -11,9 +11,21 @@
 
 @interface THDReminderDetailsController ()
 
+@property int ID;
+
 @end
 
 @implementation THDReminderDetailsController
+
+-(id) initWithID:(int)ID
+{
+    self = [super init];
+    if (self) {
+        _ID = ID;
+        //NSManagedObject* reminder = [THDAppDelegate readFromTable:@"THDReminder" byID:_ID];
+    }
+    return self;
+}
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {

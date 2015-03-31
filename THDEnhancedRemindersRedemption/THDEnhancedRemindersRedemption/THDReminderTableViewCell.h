@@ -10,4 +10,8 @@
 
 @interface THDReminderTableViewCell : UITableViewCell
 
+@property int ID;
+
+-(id) initWithID:(int)ID reuseIdentifier:(NSString *)reuseIdentifier;
+
 @end
