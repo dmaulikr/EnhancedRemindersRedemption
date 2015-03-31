@@ -1,0 +1,476 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		6621C53A1ACB47CA0029B76F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6621C5391ACB47CA0029B76F /* Foundation.framework */; };
+		6621C53C1ACB47CA0029B76F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6621C53B1ACB47CA0029B76F /* CoreGraphics.framework */; };
+		6621C53E1ACB47CA0029B76F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6621C53D1ACB47CA0029B76F /* UIKit.framework */; };
+		6621C5401ACB47CA0029B76F /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6621C53F1ACB47CA0029B76F /* CoreData.framework */; };
+		6621C5461ACB47CA0029B76F /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6621C5441ACB47CA0029B76F /* InfoPlist.strings */; };
+		6621C5481ACB47CA0029B76F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6621C5471ACB47CA0029B76F /* main.m */; };
+		6621C54C1ACB47CA0029B76F /* THDAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6621C54B1ACB47CA0029B76F /* THDAppDelegate.m */; };
+		6621C54F1ACB47CA0029B76F /* THDEnhancedRemindersRedemption.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 6621C54D1ACB47CA0029B76F /* THDEnhancedRemindersRedemption.xcdatamodeld */; };
+		6621C5511ACB47CA0029B76F /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6621C5501ACB47CA0029B76F /* Images.xcassets */; };
+		6621C5581ACB47CB0029B76F /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6621C5571ACB47CB0029B76F /* XCTest.framework */; };
+		6621C5591ACB47CB0029B76F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6621C5391ACB47CA0029B76F /* Foundation.framework */; };
+		6621C55A1ACB47CB0029B76F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6621C53D1ACB47CA0029B76F /* UIKit.framework */; };
+		6621C55B1ACB47CB0029B76F /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6621C53F1ACB47CA0029B76F /* CoreData.framework */; };
+		6621C5631ACB47CB0029B76F /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6621C5611ACB47CB0029B76F /* InfoPlist.strings */; };
+		6621C5651ACB47CB0029B76F /* THDEnhancedRemindersRedemptionTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6621C5641ACB47CB0029B76F /* THDEnhancedRemindersRedemptionTests.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		6621C55C1ACB47CB0029B76F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6621C52E1ACB47CA0029B76F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6621C5351ACB47CA0029B76F;
+			remoteInfo = THDEnhancedRemindersRedemption;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		6621C5361ACB47CA0029B76F /* THDEnhancedRemindersRedemption.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = THDEnhancedRemindersRedemption.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6621C5391ACB47CA0029B76F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		6621C53B1ACB47CA0029B76F /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		6621C53D1ACB47CA0029B76F /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		6621C53F1ACB47CA0029B76F /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		6621C5431ACB47CA0029B76F /* THDEnhancedRemindersRedemption-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "THDEnhancedRemindersRedemption-Info.plist"; sourceTree = "<group>"; };
+		6621C5451ACB47CA0029B76F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		6621C5471ACB47CA0029B76F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		6621C5491ACB47CA0029B76F /* THDEnhancedRemindersRedemption-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "THDEnhancedRemindersRedemption-Prefix.pch"; sourceTree = "<group>"; };
+		6621C54A1ACB47CA0029B76F /* THDAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = THDAppDelegate.h; sourceTree = "<group>"; };
+		6621C54B1ACB47CA0029B76F /* THDAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = THDAppDelegate.m; sourceTree = "<group>"; };
+		6621C54E1ACB47CA0029B76F /* THDEnhancedRemindersRedemption.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = THDEnhancedRemindersRedemption.xcdatamodel; sourceTree = "<group>"; };
+		6621C5501ACB47CA0029B76F /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		6621C5561ACB47CB0029B76F /* THDEnhancedRemindersRedemptionTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = THDEnhancedRemindersRedemptionTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		6621C5571ACB47CB0029B76F /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		6621C5601ACB47CB0029B76F /* THDEnhancedRemindersRedemptionTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "THDEnhancedRemindersRedemptionTests-Info.plist"; sourceTree = "<group>"; };
+		6621C5621ACB47CB0029B76F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		6621C5641ACB47CB0029B76F /* THDEnhancedRemindersRedemptionTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = THDEnhancedRemindersRedemptionTests.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		6621C5331ACB47CA0029B76F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6621C53C1ACB47CA0029B76F /* CoreGraphics.framework in Frameworks */,
+				6621C5401ACB47CA0029B76F /* CoreData.framework in Frameworks */,
+				6621C53E1ACB47CA0029B76F /* UIKit.framework in Frameworks */,
+				6621C53A1ACB47CA0029B76F /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6621C5531ACB47CB0029B76F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6621C5581ACB47CB0029B76F /* XCTest.framework in Frameworks */,
+				6621C55B1ACB47CB0029B76F /* CoreData.framework in Frameworks */,
+				6621C55A1ACB47CB0029B76F /* UIKit.framework in Frameworks */,
+				6621C5591ACB47CB0029B76F /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		6621C52D1ACB47CA0029B76F = {
+			isa = PBXGroup;
+			children = (
+				6621C5411ACB47CA0029B76F /* THDEnhancedRemindersRedemption */,
+				6621C55E1ACB47CB0029B76F /* THDEnhancedRemindersRedemptionTests */,
+				6621C5381ACB47CA0029B76F /* Frameworks */,
+				6621C5371ACB47CA0029B76F /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		6621C5371ACB47CA0029B76F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				6621C5361ACB47CA0029B76F /* THDEnhancedRemindersRedemption.app */,
+				6621C5561ACB47CB0029B76F /* THDEnhancedRemindersRedemptionTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		6621C5381ACB47CA0029B76F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				6621C5391ACB47CA0029B76F /* Foundation.framework */,
+				6621C53B1ACB47CA0029B76F /* CoreGraphics.framework */,
+				6621C53D1ACB47CA0029B76F /* UIKit.framework */,
+				6621C53F1ACB47CA0029B76F /* CoreData.framework */,
+				6621C5571ACB47CB0029B76F /* XCTest.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		6621C5411ACB47CA0029B76F /* THDEnhancedRemindersRedemption */ = {
+			isa = PBXGroup;
+			children = (
+				6621C54A1ACB47CA0029B76F /* THDAppDelegate.h */,
+				6621C54B1ACB47CA0029B76F /* THDAppDelegate.m */,
+				6621C5501ACB47CA0029B76F /* Images.xcassets */,
+				6621C54D1ACB47CA0029B76F /* THDEnhancedRemindersRedemption.xcdatamodeld */,
+				6621C5421ACB47CA0029B76F /* Supporting Files */,
+			);
+			path = THDEnhancedRemindersRedemption;
+			sourceTree = "<group>";
+		};
+		6621C5421ACB47CA0029B76F /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				6621C5431ACB47CA0029B76F /* THDEnhancedRemindersRedemption-Info.plist */,
+				6621C5441ACB47CA0029B76F /* InfoPlist.strings */,
+				6621C5471ACB47CA0029B76F /* main.m */,
+				6621C5491ACB47CA0029B76F /* THDEnhancedRemindersRedemption-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		6621C55E1ACB47CB0029B76F /* THDEnhancedRemindersRedemptionTests */ = {
+			isa = PBXGroup;
+			children = (
+				6621C5641ACB47CB0029B76F /* THDEnhancedRemindersRedemptionTests.m */,
+				6621C55F1ACB47CB0029B76F /* Supporting Files */,
+			);
+			path = THDEnhancedRemindersRedemptionTests;
+			sourceTree = "<group>";
+		};
+		6621C55F1ACB47CB0029B76F /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				6621C5601ACB47CB0029B76F /* THDEnhancedRemindersRedemptionTests-Info.plist */,
+				6621C5611ACB47CB0029B76F /* InfoPlist.strings */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		6621C5351ACB47CA0029B76F /* THDEnhancedRemindersRedemption */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6621C5681ACB47CB0029B76F /* Build configuration list for PBXNativeTarget "THDEnhancedRemindersRedemption" */;
+			buildPhases = (
+				6621C5321ACB47CA0029B76F /* Sources */,
+				6621C5331ACB47CA0029B76F /* Frameworks */,
+				6621C5341ACB47CA0029B76F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = THDEnhancedRemindersRedemption;
+			productName = THDEnhancedRemindersRedemption;
+			productReference = 6621C5361ACB47CA0029B76F /* THDEnhancedRemindersRedemption.app */;
+			productType = "com.apple.product-type.application";
+		};
+		6621C5551ACB47CB0029B76F /* THDEnhancedRemindersRedemptionTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6621C56B1ACB47CB0029B76F /* Build configuration list for PBXNativeTarget "THDEnhancedRemindersRedemptionTests" */;
+			buildPhases = (
+				6621C5521ACB47CB0029B76F /* Sources */,
+				6621C5531ACB47CB0029B76F /* Frameworks */,
+				6621C5541ACB47CB0029B76F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				6621C55D1ACB47CB0029B76F /* PBXTargetDependency */,
+			);
+			name = THDEnhancedRemindersRedemptionTests;
+			productName = THDEnhancedRemindersRedemptionTests;
+			productReference = 6621C5561ACB47CB0029B76F /* THDEnhancedRemindersRedemptionTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		6621C52E1ACB47CA0029B76F /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				CLASSPREFIX = THD;
+				LastUpgradeCheck = 0510;
+				ORGANIZATIONNAME = "Team Hipster Droid";
+				TargetAttributes = {
+					6621C5551ACB47CB0029B76F = {
+						TestTargetID = 6621C5351ACB47CA0029B76F;
+					};
+				};
+			};
+			buildConfigurationList = 6621C5311ACB47CA0029B76F /* Build configuration list for PBXProject "THDEnhancedRemindersRedemption" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 6621C52D1ACB47CA0029B76F;
+			productRefGroup = 6621C5371ACB47CA0029B76F /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				6621C5351ACB47CA0029B76F /* THDEnhancedRemindersRedemption */,
+				6621C5551ACB47CB0029B76F /* THDEnhancedRemindersRedemptionTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		6621C5341ACB47CA0029B76F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6621C5461ACB47CA0029B76F /* InfoPlist.strings in Resources */,
+				6621C5511ACB47CA0029B76F /* Images.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6621C5541ACB47CB0029B76F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6621C5631ACB47CB0029B76F /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		6621C5321ACB47CA0029B76F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6621C5481ACB47CA0029B76F /* main.m in Sources */,
+				6621C54C1ACB47CA0029B76F /* THDAppDelegate.m in Sources */,
+				6621C54F1ACB47CA0029B76F /* THDEnhancedRemindersRedemption.xcdatamodeld in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6621C5521ACB47CB0029B76F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6621C5651ACB47CB0029B76F /* THDEnhancedRemindersRedemptionTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		6621C55D1ACB47CB0029B76F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6621C5351ACB47CA0029B76F /* THDEnhancedRemindersRedemption */;
+			targetProxy = 6621C55C1ACB47CB0029B76F /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		6621C5441ACB47CA0029B76F /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				6621C5451ACB47CA0029B76F /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		6621C5611ACB47CB0029B76F /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				6621C5621ACB47CB0029B76F /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		6621C5661ACB47CB0029B76F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		6621C5671ACB47CB0029B76F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		6621C5691ACB47CB0029B76F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "THDEnhancedRemindersRedemption/THDEnhancedRemindersRedemption-Prefix.pch";
+				INFOPLIST_FILE = "THDEnhancedRemindersRedemption/THDEnhancedRemindersRedemption-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		6621C56A1ACB47CB0029B76F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "THDEnhancedRemindersRedemption/THDEnhancedRemindersRedemption-Prefix.pch";
+				INFOPLIST_FILE = "THDEnhancedRemindersRedemption/THDEnhancedRemindersRedemption-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		6621C56C1ACB47CB0029B76F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/THDEnhancedRemindersRedemption.app/THDEnhancedRemindersRedemption";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "THDEnhancedRemindersRedemption/THDEnhancedRemindersRedemption-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "THDEnhancedRemindersRedemptionTests/THDEnhancedRemindersRedemptionTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Debug;
+		};
+		6621C56D1ACB47CB0029B76F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/THDEnhancedRemindersRedemption.app/THDEnhancedRemindersRedemption";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "THDEnhancedRemindersRedemption/THDEnhancedRemindersRedemption-Prefix.pch";
+				INFOPLIST_FILE = "THDEnhancedRemindersRedemptionTests/THDEnhancedRemindersRedemptionTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		6621C5311ACB47CA0029B76F /* Build configuration list for PBXProject "THDEnhancedRemindersRedemption" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6621C5661ACB47CB0029B76F /* Debug */,
+				6621C5671ACB47CB0029B76F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6621C5681ACB47CB0029B76F /* Build configuration list for PBXNativeTarget "THDEnhancedRemindersRedemption" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6621C5691ACB47CB0029B76F /* Debug */,
+				6621C56A1ACB47CB0029B76F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		6621C56B1ACB47CB0029B76F /* Build configuration list for PBXNativeTarget "THDEnhancedRemindersRedemptionTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6621C56C1ACB47CB0029B76F /* Debug */,
+				6621C56D1ACB47CB0029B76F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		6621C54D1ACB47CA0029B76F /* THDEnhancedRemindersRedemption.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				6621C54E1ACB47CA0029B76F /* THDEnhancedRemindersRedemption.xcdatamodel */,
+			);
+			currentVersion = 6621C54E1ACB47CA0029B76F /* THDEnhancedRemindersRedemption.xcdatamodel */;
+			path = THDEnhancedRemindersRedemption.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = 6621C52E1ACB47CA0029B76F /* Project object */;
+}
