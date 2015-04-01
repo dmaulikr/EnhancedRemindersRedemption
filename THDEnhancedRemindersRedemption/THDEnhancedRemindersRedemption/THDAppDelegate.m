@@ -9,6 +9,9 @@
 #import "THDAppDelegate.h"
 #import "THDReminderListController.h"
 #import "THDReminder.h"
+#import <UIKit/UIAlertView.h>
+
+
 
 @implementation THDAppDelegate
 
@@ -24,19 +27,34 @@
     THDReminderListController *thdReminderListController = [[THDReminderListController alloc] init];
     UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:thdReminderListController];
     
+    //Handle notifications when app is in background
+    UILocalNotification* localNotification = [launchOptions objectForKey:UIApplicationLaunchOptionsLocalNotificationKey];
+    if (localNotification) {
+        [application setApplicationIconBadgeNumber: 0];
+    }
+    
     [[self window] setRootViewController:navController];
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     return YES;
 }
 
--(void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
+-(void) tempMapCallBackMethodAdamPleaseFixMe
 {
-    //******************************
-    //received a local notification:
-    //automatically called after
-    //didFinishLaunchingWithOptions
-    //******************************
+    //Set up notification
+    UILocalNotification* localNotification = [[UILocalNotification alloc] init];
+    [localNotification setAlertBody: @"Notification Fired"];
+    [localNotification setTimeZone: [NSTimeZone defaultTimeZone]];
+    [localNotification setApplicationIconBadgeNumber: [[UIApplication sharedApplication] applicationIconBadgeNumber] + 1];
+    
+    //Fire in the hole
+    [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
+}
+
+- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
+{
+    //Handle notifications when app is in foreground
+    application.applicationIconBadgeNumber = 0;
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application
@@ -194,8 +212,6 @@
     {
         return nil;
     }
-    
-    
 }
 //-(NSManagedObject*) readFromTable:(NSEntityDescription*)entityDescription byID:(NSManagedObjectID*)ID
 //{
