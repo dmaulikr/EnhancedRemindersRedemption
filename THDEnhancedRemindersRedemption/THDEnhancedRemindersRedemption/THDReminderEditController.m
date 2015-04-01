@@ -11,6 +11,9 @@
 #import "THDAppDelegate.h"
 
 @interface THDReminderEditController ()
+{
+    
+}
 @property (weak, nonatomic) NSManagedObjectContext *context;
 //Text fields
 @property (strong, nonatomic) IBOutlet UITextField *titleTextField;
@@ -80,18 +83,24 @@
     UIBarButtonItem *saveButton = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(save)];
     [[self navigationItem]setRightBarButtonItem:saveButton];
 }
-
+#warning notifications need to be setup
 -(void)save
 {
     THDAppDelegate *root = [[UIApplication sharedApplication]delegate];
     NSManagedObjectContext *context = [root managedObjectContext];
 
-    THDReminder *reminder = [NSEntityDescription insertNewObjectForEntityForName:@"THDReminder" inManagedObjectContext:context];
-    [reminder setTitleText:[[self titleTextField]text]];
-    [reminder setDescriptionText:[[self descriptionTextField]text]];
-    [reminder setTriggerAfter:_remindAfterDate];
-    [reminder setTriggerBefore:_remindByDate];
-    [reminder setLocationText:[[self reminderLocationTextField]text]];
+    if(!_reminder)
+    {
+        THDReminder *reminder = [NSEntityDescription insertNewObjectForEntityForName:@"THDReminder" inManagedObjectContext:context];
+        _reminder = reminder;
+    }
+    
+    [_reminder setTitleText:[[self titleTextField]text]];
+    [_reminder setDescriptionText:[[self descriptionTextField]text]];
+    [_reminder setTriggerAfter:_remindAfterDate];
+    [_reminder setTriggerBefore:_remindByDate];
+    [_reminder setLocationText:[[self reminderLocationTextField]text]];
+    
     
     NSError *error;
     
