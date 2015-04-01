@@ -9,5 +9,10 @@
 #import <UIKit/UIKit.h>
 
 @interface THDReminderListController : UITableViewController <UITableViewDelegate, UITableViewDataSource>
+{
+    NSArray* _reminders;
+}
+
+- (id)initWithReminders:(NSArray*)array;
 
 @end

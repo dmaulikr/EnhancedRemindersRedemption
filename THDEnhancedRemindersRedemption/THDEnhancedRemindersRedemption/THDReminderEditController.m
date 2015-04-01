@@ -38,6 +38,15 @@
 
 @implementation THDReminderEditController
 
+-(id) initWithReminder:(THDReminder*)reminder
+{
+    self = [super init];
+    if (self) {
+        _reminder = reminder;
+    }
+    return self;
+}
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
