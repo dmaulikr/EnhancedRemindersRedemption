@@ -11,8 +11,6 @@
 #import "THDReminder.h"
 #import <UIKit/UIAlertView.h>
 
-
-
 @implementation THDAppDelegate
 
 @synthesize managedObjectContext = _managedObjectContext;
@@ -31,7 +29,21 @@
     UILocalNotification* localNotification = [launchOptions objectForKey:UIApplicationLaunchOptionsLocalNotificationKey];
     if (localNotification) {
         [application setApplicationIconBadgeNumber: 0];
+        
+        UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"New Notification" message:[NSString stringWithFormat:@"%@", [[localNotification userInfo] objectForKey:@"Key"]] delegate:nil cancelButtonTitle:@"Cancel" otherButtonTitles:@"Okay", nil];
+        
+        //UIAlertViewDelegate* delegate = [[UIAlertViewDelegate alloc] init];
+        //delegate = [[UIAlertViewDelegate alloc] alertView:alert clickedButtonAtIndex:0];
     }
+    
+    #warning Debug notification
+    UILocalNotification* debugNotification = [[UILocalNotification alloc] init];
+    debugNotification.fireDate = [NSDate dateWithTimeIntervalSinceNow: 7];
+    debugNotification.alertBody = [NSString stringWithFormat:@"Debug Notification"];
+    debugNotification.soundName = UILocalNotificationDefaultSoundName;
+    debugNotification.applicationIconBadgeNumber = [[UIApplication sharedApplication] applicationIconBadgeNumber] + 1;
+    debugNotification.userInfo = [NSDictionary dictionaryWithObject:@"Alert!" forKey:@"Key"];
+    [[UIApplication sharedApplication] scheduleLocalNotification:debugNotification];
     
     [[self window] setRootViewController:navController];
     self.window.backgroundColor = [UIColor whiteColor];
