@@ -61,8 +61,6 @@
 {
     if(_reminder)
     {
-        //create new THDReminder object?
-        
         //load current values into the appropriate fields in the nib
         
     }
@@ -99,7 +97,7 @@
 
 - (IBAction)remindByEditDidBegin:(id)sender
 {
-    UIDatePicker *datePicker = [[UIDatePicker alloc]init];
+    UIDatePicker *datePicker = [[UIDatePicker alloc] init];
     [datePicker setDate:[NSDate date]];
     [datePicker addTarget:self action:@selector(updateRemindByTextField:) forControlEvents:UIControlEventValueChanged];
     [self.remindByTextField setInputView:datePicker];
