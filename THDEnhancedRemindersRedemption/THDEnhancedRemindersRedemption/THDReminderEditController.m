@@ -8,8 +8,10 @@
 
 #import "THDReminderEditController.h"
 #import "THDReminder.h"
+#import "THDAppDelegate.h"
 
 @interface THDReminderEditController ()
+@property (weak, nonatomic) NSManagedObjectContext *context;
 //Text fields
 @property (strong, nonatomic) IBOutlet UITextField *titleTextField;
 @property (strong, nonatomic) IBOutlet UITextView *descriptionTextField;
@@ -60,7 +62,40 @@
 
 -(void)save
 {
-    [[self navigationController]popViewControllerAnimated:YES];
+    THDAppDelegate *root = [[UIApplication sharedApplication]delegate];
+    NSManagedObjectContext *context = [root managedObjectContext];
+
+    THDReminder *reminder = [NSEntityDescription insertNewObjectForEntityForName:@"THDReminder" inManagedObjectContext:context];
+    [reminder setTitleText:[[self titleTextField]text]];
+    [reminder setDescriptionText:[[self descriptionTextField]text]];
+    [reminder setTriggerAfter:_remindAfterDate];
+    [reminder setTriggerBefore:_remindByDate];
+    [reminder setLocationText:[[self reminderLocationTextField]text]];
+    
+    NSError *error;
+    
+    if([context save:&error])
+    {
+        //test code please ignore
+//        NSFetchRequest *request = [[NSFetchRequest alloc]init];
+//        NSEntityDescription *entity = [NSEntityDescription entityForName:@"THDReminder" inManagedObjectContext:context];
+//        
+//        [request setEntity:entity];
+//        
+//        NSArray *fetched = [context executeFetchRequest:request error:&error];
+//        
+//        for(THDReminder *reminder in fetched){
+//            NSLog(@"Title: %@", [reminder titleText]);
+//        }
+        
+        [[self navigationController]popViewControllerAnimated:YES];
+    }
+    else
+    {
+        NSLog(@"insert broken popup here");
+    }
+    
+    
 }
 
 //dismiss the keyboard

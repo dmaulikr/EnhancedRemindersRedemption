@@ -21,4 +21,6 @@
 
 -(NSFetchedResultsController*) readFromTable:(NSString*)entityName;
 
+-(NSManagedObjectContext*)getManagedObjectContext;
+
 @end
