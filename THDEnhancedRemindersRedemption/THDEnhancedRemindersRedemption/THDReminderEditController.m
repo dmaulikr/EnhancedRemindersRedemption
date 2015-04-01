@@ -34,15 +34,27 @@
 
 //dismiss the keyboard when the background is touched
 - (void)dismissKeyboard;
+
+- (IBAction)deleteAction:(id)sender;
+@property (strong, nonatomic) IBOutlet UIButton *deleteOutlet;
+
 @end
 
 @implementation THDReminderEditController
+
+-(id) init
+{
+    _reminder = nil;
+    [_deleteOutlet setHidden:YES];
+    return self;
+}
 
 -(id) initWithReminder:(THDReminder*)reminder
 {
     self = [super init];
     if (self) {
         _reminder = reminder;
+        [_deleteOutlet setHidden:(reminder ? NO : YES)];
     }
     return self;
 }
@@ -103,6 +115,11 @@
     {
         NSLog(@"insert broken popup here");
     }
+}
+
+- (IBAction)deleteAction:(id)sender {
+    THDAppDelegate *root = [[UIApplication sharedApplication]delegate];
+    NSManagedObjectContext *context = [root managedObjectContext];
     
     
 }
@@ -116,7 +133,6 @@
     [_remindByTextField resignFirstResponder];
     [_reminderLocationTextField resignFirstResponder];
 }
-
 
 - (IBAction)remindAfterEditDidBegin:(id)sender
 {

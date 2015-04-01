@@ -21,6 +21,7 @@
 
 -(id)init
 {
+    _reminders = [[NSArray alloc] init];
     return [self initWithStyle:UITableViewStylePlain];
 }
 
