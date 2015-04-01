@@ -85,7 +85,17 @@
     
     if([context save:&error])
     {
-        //load current values into the appropriate fields in the nib
+        //test code please ignore
+//        NSFetchRequest *request = [[NSFetchRequest alloc]init];
+//        NSEntityDescription *entity = [NSEntityDescription entityForName:@"THDReminder" inManagedObjectContext:context];
+//        
+//        [request setEntity:entity];
+//        
+//        NSArray *fetched = [context executeFetchRequest:request error:&error];
+//        
+//        for(THDReminder *reminder in fetched){
+//            NSLog(@"Title: %@", [reminder titleText]);
+//        }
         
         [[self navigationController]popViewControllerAnimated:YES];
     }
