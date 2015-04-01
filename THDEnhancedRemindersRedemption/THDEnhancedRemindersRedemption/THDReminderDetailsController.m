@@ -17,6 +17,12 @@
 
 @implementation THDReminderDetailsController
 
+-(id)init
+{
+    _reminder = nil;
+    return self;
+}
+
 -(id) initWithReminder:(THDReminder*)reminder
 {
     self = [super init];

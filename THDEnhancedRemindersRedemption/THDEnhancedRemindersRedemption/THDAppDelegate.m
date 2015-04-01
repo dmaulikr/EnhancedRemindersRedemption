@@ -22,7 +22,12 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     
     //Set up Navigation Controller
-    THDReminderListController *thdReminderListController = [[THDReminderListController alloc] init];
+    NSFetchedResultsController* fetchedResultsController = [self readFromTable:@"THDReminder"];
+    NSError* error;
+    [fetchedResultsController performFetch:&error];
+    NSArray *reminders = [fetchedResultsController fetchedObjects];
+    
+    THDReminderListController *thdReminderListController = [[THDReminderListController alloc] initWithReminders:reminders];
     UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:thdReminderListController];
     
     //Handle notifications when app is in background

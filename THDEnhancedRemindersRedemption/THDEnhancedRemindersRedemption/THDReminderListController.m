@@ -21,6 +21,7 @@
 
 -(id)init
 {
+    _reminders = [[NSArray alloc] init];
     return [self initWithStyle:UITableViewStylePlain];
 }
 
@@ -96,6 +97,7 @@
     // Configure the cell...
     THDReminder* reminder = _reminders[[indexPath row]];
     [[cell textLabel] setText:[reminder titleText]];
+    [cell setAccessoryType:UITableViewCellAccessoryDetailButton];
     
     return cell;
 }
@@ -103,7 +105,7 @@
 -(void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath
 {
     //redirect to the THDReminderDetailsController initializing using the ID for the selected row
-    UIViewController *next = [[THDReminderDetailsController alloc] init];
+    UIViewController *next = [[THDReminderDetailsController alloc] initWithReminder:_reminders[[indexPath row]]];
     
     if(next != nil)
         [[self navigationController] pushViewController:next animated:YES];
