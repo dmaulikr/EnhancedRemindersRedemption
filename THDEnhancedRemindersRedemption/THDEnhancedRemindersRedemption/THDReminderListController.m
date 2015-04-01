@@ -99,9 +99,6 @@
     [[cell textLabel] setText:[reminder titleText]];
     [cell setAccessoryType:UITableViewCellAccessoryDetailButton];
     
-    [[cell textLabel] setText:@"Reminder"];
-    [cell setAccessoryType:UITableViewCellAccessoryDetailButton];
-    
     return cell;
 }
 
