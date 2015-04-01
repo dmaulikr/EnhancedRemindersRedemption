@@ -8,8 +8,10 @@
 
 #import "THDReminderEditController.h"
 #import "THDReminder.h"
+#import "THDAppDelegate.h"
 
 @interface THDReminderEditController ()
+@property (weak, nonatomic) NSManagedObjectContext *context;
 //Text fields
 @property (strong, nonatomic) IBOutlet UITextField *titleTextField;
 @property (strong, nonatomic) IBOutlet UITextView *descriptionTextField;
@@ -26,6 +28,9 @@
 //callbacks to display datePicker instead of keyboard
 - (IBAction)remindAfterEditDidBegin:(id)sender;
 - (IBAction)remindByEditDidBegin:(id)sender;
+
+//save the reminder to the database
+-(void)save;
 
 //dismiss the keyboard when the background is touched
 - (void)dismissKeyboard;
@@ -59,11 +64,36 @@
 
 -(void)viewDidLoad
 {
-    if(_reminder)
+    [super viewDidLoad];
+    UIBarButtonItem *saveButton = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(save)];
+    [[self navigationItem]setRightBarButtonItem:saveButton];
+}
+
+-(void)save
+{
+    THDAppDelegate *root = [[UIApplication sharedApplication]delegate];
+    NSManagedObjectContext *context = [root managedObjectContext];
+
+    THDReminder *reminder = [NSEntityDescription insertNewObjectForEntityForName:@"THDReminder" inManagedObjectContext:context];
+    [reminder setTitleText:[[self titleTextField]text]];
+    [reminder setDescriptionText:[[self descriptionTextField]text]];
+    [reminder setTriggerAfter:_remindAfterDate];
+    [reminder setTriggerBefore:_remindByDate];
+    [reminder setLocationText:[[self reminderLocationTextField]text]];
+    
+    NSError *error;
+    
+    if([context save:&error])
     {
         //load current values into the appropriate fields in the nib
         
+        [[self navigationController]popViewControllerAnimated:YES];
     }
+    else
+    {
+        NSLog(@"insert broken popup here");
+    }
+    
     
 }
 
