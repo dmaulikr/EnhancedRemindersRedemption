@@ -105,8 +105,7 @@
 -(void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath
 {
     //redirect to the THDReminderDetailsController initializing using the ID for the selected row
-    //UIViewController *next = [[THDReminderDetailsController alloc] initWithReminder:_reminders[[indexPath row]]];
-    UIViewController *next = [[THDReminderDetailsController alloc] initWithReminder:nil];
+    UIViewController *next = [[THDReminderDetailsController alloc] initWithReminder:_reminders[[indexPath row]]];
     
     if(next != nil)
         [[self navigationController] pushViewController:next animated:YES];

@@ -54,7 +54,8 @@
     self = [super init];
     if (self) {
         _reminder = reminder;
-        [_deleteOutlet setHidden:(reminder ? NO : YES)];
+        //[_deleteOutlet setHidden:(!reminder ? YES : NO)];
+        [_deleteOutlet setHidden:(reminder == nil)];
     }
     return self;
 }
@@ -109,7 +110,7 @@
 //            NSLog(@"Title: %@", [reminder titleText]);
 //        }
         
-        [[self navigationController]popViewControllerAnimated:YES];
+        [[self navigationController] popViewControllerAnimated:YES];
     }
     else
     {
@@ -121,7 +122,17 @@
     THDAppDelegate *root = [[UIApplication sharedApplication]delegate];
     NSManagedObjectContext *context = [root managedObjectContext];
     
+    [context deleteObject:_reminder];
     
+    NSError *error;
+    if([context save:&error])
+    {
+       [[self navigationController] popToRootViewControllerAnimated:YES];
+    }
+    else
+    {
+        NSLog(@"Delete Failed");
+    }
 }
 
 //dismiss the keyboard
