@@ -21,9 +21,6 @@
 @property (strong, nonatomic) IBOutlet UITextField *remindAfterTextField;
 @property (strong, nonatomic) IBOutlet UITextField *remindByTextField;
 @property (strong, nonatomic) IBOutlet UITextField *reminderLocationTextField;
-//before and after dates
-@property (strong, nonatomic) NSDate *remindAfterDate;
-@property (strong, nonatomic) NSDate *remindByDate;
 
 //callback methods to change date fields when datepicker changes
 - (void)updateRemindAfterTextField:(id)sender;
@@ -84,7 +81,7 @@
     UIBarButtonItem *saveButton = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(save)];
     [[self navigationItem]setRightBarButtonItem:saveButton];
 }
-#warning notifications need to be setup
+
 -(void)save
 {
     THDAppDelegate *root = [[UIApplication sharedApplication]delegate];
@@ -96,23 +93,30 @@
         _reminder = reminder;
     }
     
+    
+    
     [_reminder setTitleText:[[self titleTextField]text]];
     [_reminder setDescriptionText:[[self descriptionTextField]text]];
-    [_reminder setTriggerAfter:_remindAfterDate];
-    [_reminder setTriggerBefore:_remindByDate];
+    //dates return as nil if text field is empty
+    [_reminder setTriggerAfter:[[THDAppDelegate dateFormatter] dateFromString:[[self remindAfterTextField]text]]];
+    [_reminder setTriggerBefore:[[THDAppDelegate dateFormatter] dateFromString:[[self remindByTextField]text]]];
     [_reminder setLocationText:[[self reminderLocationTextField]text]];
     
     
     NSError *error;
-    
     if([context save:&error])
     {
+        if ([_reminder triggerBefore] != nil || [_reminder triggerAfter] != nil)
+            [root createNotificationWithReminder:_reminder sendNow:NO];
         
         [[self navigationController] popViewControllerAnimated:YES];
     }
     else
     {
-        NSLog(@"insert broken popup here");
+        UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Error!" message:@"Unable to save reminder at this time." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+        [alert show];
+        
+        //NSLog(@"insert broken popup here");
     }
 }
 
@@ -129,7 +133,10 @@
     }
     else
     {
-        NSLog(@"Delete Failed");
+        UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Error!" message:@"Unable to delete reminder at this time." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+        [alert show];
+        
+        //NSLog(@"Delete Failed");
     }
 }
 
@@ -156,8 +163,8 @@
 - (void)updateRemindAfterTextField:(id)sender
 {
     UIDatePicker *picker = (UIDatePicker*)self.remindAfterTextField.inputView;
-    self.remindAfterTextField.text = [NSString stringWithFormat:@"%@",picker.date];
-    _remindAfterDate = picker.date;
+    NSString* dateString = [NSString stringWithFormat:@"%@",[[THDAppDelegate dateFormatter] stringFromDate:picker.date]];
+    self.remindAfterTextField.text = ([dateString isEqualToString:@"(null)"] ? @"" : dateString);
 }
 
 - (IBAction)remindByEditDidBegin:(id)sender
@@ -172,8 +179,9 @@
 -(void)updateRemindByTextField:(id)sender
 {
     UIDatePicker *picker = (UIDatePicker*)self.remindByTextField.inputView;
-    self.remindByTextField.text = [NSString stringWithFormat:@"%@",picker.date];
-    _remindByDate = picker.date;
+    NSString* dateString = [NSString stringWithFormat:@"%@",[[THDAppDelegate dateFormatter] stringFromDate:picker.date]];
+    self.remindByTextField.text = @"";
+    self.remindByTextField.text = ([dateString isEqualToString:@"(null)"] ? @"" : dateString);
 }
 
 @end

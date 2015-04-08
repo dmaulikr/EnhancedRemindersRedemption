@@ -27,8 +27,8 @@
 		6621C5761ACB496B0029B76F /* THDReminderDetailsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6621C5751ACB496B0029B76F /* THDReminderDetailsController.m */; };
 		6621C57A1ACB499B0029B76F /* THDReminderEditController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6621C5781ACB499B0029B76F /* THDReminderEditController.m */; };
 		6621C57B1ACB499B0029B76F /* THDReminderEditController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6621C5791ACB499B0029B76F /* THDReminderEditController.xib */; };
-		6621C57E1ACB4A260029B76F /* THDReminderTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 6621C57D1ACB4A260029B76F /* THDReminderTableViewCell.m */; };
 		6621C5801ACB4A6C0029B76F /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 6621C57F1ACB4A6C0029B76F /* Settings.bundle */; };
+		6AB1E21C1ACC5C6E001D729B /* THDReminderNotificationAlert.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AB1E21B1ACC5C6E001D729B /* THDReminderNotificationAlert.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -69,9 +69,9 @@
 		6621C5771ACB499B0029B76F /* THDReminderEditController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THDReminderEditController.h; sourceTree = "<group>"; };
 		6621C5781ACB499B0029B76F /* THDReminderEditController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THDReminderEditController.m; sourceTree = "<group>"; };
 		6621C5791ACB499B0029B76F /* THDReminderEditController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = THDReminderEditController.xib; sourceTree = "<group>"; };
-		6621C57C1ACB4A260029B76F /* THDReminderTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THDReminderTableViewCell.h; sourceTree = "<group>"; };
-		6621C57D1ACB4A260029B76F /* THDReminderTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THDReminderTableViewCell.m; sourceTree = "<group>"; };
 		6621C57F1ACB4A6C0029B76F /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
+		6AB1E21A1ACC5C6E001D729B /* THDReminderNotificationAlert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THDReminderNotificationAlert.h; sourceTree = "<group>"; };
+		6AB1E21B1ACC5C6E001D729B /* THDReminderNotificationAlert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THDReminderNotificationAlert.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -136,6 +136,8 @@
 			children = (
 				6621C54A1ACB47CA0029B76F /* THDAppDelegate.h */,
 				6621C54B1ACB47CA0029B76F /* THDAppDelegate.m */,
+				6AB1E21A1ACC5C6E001D729B /* THDReminderNotificationAlert.h */,
+				6AB1E21B1ACC5C6E001D729B /* THDReminderNotificationAlert.m */,
 				6621C5501ACB47CA0029B76F /* Images.xcassets */,
 				6621C54D1ACB47CA0029B76F /* THDEnhancedRemindersRedemption.xcdatamodeld */,
 				6621C5421ACB47CA0029B76F /* Supporting Files */,
@@ -148,8 +150,6 @@
 				6621C5771ACB499B0029B76F /* THDReminderEditController.h */,
 				6621C5781ACB499B0029B76F /* THDReminderEditController.m */,
 				6621C5791ACB499B0029B76F /* THDReminderEditController.xib */,
-				6621C57C1ACB4A260029B76F /* THDReminderTableViewCell.h */,
-				6621C57D1ACB4A260029B76F /* THDReminderTableViewCell.m */,
 				6621C57F1ACB4A6C0029B76F /* Settings.bundle */,
 			);
 			path = THDEnhancedRemindersRedemption;
@@ -286,9 +286,9 @@
 				6621C54C1ACB47CA0029B76F /* THDAppDelegate.m in Sources */,
 				6621C5701ACB49140029B76F /* THDReminder.m in Sources */,
 				6621C5761ACB496B0029B76F /* THDReminderDetailsController.m in Sources */,
+				6AB1E21C1ACC5C6E001D729B /* THDReminderNotificationAlert.m in Sources */,
 				6621C57A1ACB499B0029B76F /* THDReminderEditController.m in Sources */,
 				6621C54F1ACB47CA0029B76F /* THDEnhancedRemindersRedemption.xcdatamodeld in Sources */,
-				6621C57E1ACB4A260029B76F /* THDReminderTableViewCell.m in Sources */,
 				6621C5731ACB494F0029B76F /* THDReminderListController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -486,6 +486,7 @@
 				6621C56A1ACB47CB0029B76F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		6621C56B1ACB47CB0029B76F /* Build configuration list for PBXNativeTarget "THDEnhancedRemindersRedemptionTests" */ = {
 			isa = XCConfigurationList;
@@ -494,6 +495,7 @@
 				6621C56D1ACB47CB0029B76F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 

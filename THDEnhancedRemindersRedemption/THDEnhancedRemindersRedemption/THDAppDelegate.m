@@ -8,7 +8,8 @@
 
 #import "THDAppDelegate.h"
 #import "THDReminderListController.h"
-#import "THDReminder.h"
+#import "THDReminderDetailsController.h"
+#import "THDReminderNotificationAlert.h"
 #import <UIKit/UIAlertView.h>
 
 @implementation THDAppDelegate
@@ -25,30 +26,20 @@
     NSFetchedResultsController* fetchedResultsController = [self readFromTable:@"THDReminder"];
     NSError* error;
     [fetchedResultsController performFetch:&error];
-    NSArray *reminders = [fetchedResultsController fetchedObjects];
+    NSArray* reminders = [fetchedResultsController fetchedObjects];
     
-    THDReminderListController *thdReminderListController = [[THDReminderListController alloc] initWithReminders:reminders];
-    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:thdReminderListController];
+    UITableViewController* thdReminderListController = [[THDReminderListController alloc] initWithReminders:reminders];
+    UINavigationController* navController = [[UINavigationController alloc] initWithRootViewController:thdReminderListController];
     
-    //Handle notifications when app is in background
+    //Handle notifications when app is in background (user clicks notification, loads app, then does this)
     UILocalNotification* localNotification = [launchOptions objectForKey:UIApplicationLaunchOptionsLocalNotificationKey];
     if (localNotification) {
         [application setApplicationIconBadgeNumber: 0];
         
-        UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"New Notification" message:[NSString stringWithFormat:@"%@", [[localNotification userInfo] objectForKey:@"Key"]] delegate:nil cancelButtonTitle:@"Cancel" otherButtonTitles:@"Okay", nil];
-        
-        //UIAlertViewDelegate* delegate = [[UIAlertViewDelegate alloc] init];
-        //delegate = [[UIAlertViewDelegate alloc] alertView:alert clickedButtonAtIndex:0];
+        UIViewController* next = [[THDReminderDetailsController alloc] initWithReminder:[[localNotification userInfo] objectForKey:@"reminder"]];
+        if(next != nil)
+            [navController pushViewController:next animated:YES];
     }
-    
-    #warning Debug notification
-    UILocalNotification* debugNotification = [[UILocalNotification alloc] init];
-    debugNotification.fireDate = [NSDate dateWithTimeIntervalSinceNow: 7];
-    debugNotification.alertBody = [NSString stringWithFormat:@"Debug Notification"];
-    debugNotification.soundName = UILocalNotificationDefaultSoundName;
-    debugNotification.applicationIconBadgeNumber = [[UIApplication sharedApplication] applicationIconBadgeNumber] + 1;
-    debugNotification.userInfo = [NSDictionary dictionaryWithObject:@"Alert!" forKey:@"Key"];
-    [[UIApplication sharedApplication] scheduleLocalNotification:debugNotification];
     
     [[self window] setRootViewController:navController];
     self.window.backgroundColor = [UIColor whiteColor];
@@ -56,23 +47,39 @@
     return YES;
 }
 
--(void) tempMapCallBackMethodAdamPleaseFixMe
+//Return dateFormatter when it's called (setting it up only on the first time)
++(NSDateFormatter *)dateFormatter
 {
-    //Set up notification
-    UILocalNotification* localNotification = [[UILocalNotification alloc] init];
-    [localNotification setAlertBody: @"Notification Fired"];
-    [localNotification setTimeZone: [NSTimeZone defaultTimeZone]];
-    [localNotification setApplicationIconBadgeNumber: [[UIApplication sharedApplication] applicationIconBadgeNumber] + 1];
-    
-    //Fire in the hole
-    [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
+    static NSDateFormatter* df = nil;
+    if (df == nil) {
+        df = [[NSDateFormatter alloc] init];
+        [df setTimeStyle:NSDateFormatterShortStyle];
+        [df setDateStyle:NSDateFormatterFullStyle];
+        [df setLocale:[NSLocale currentLocale]];
+    }
+    return df;
 }
 
-- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
-{
-    //Handle notifications when app is in foreground
-    application.applicationIconBadgeNumber = 0;
+/*
+// Foo.h
+@interface Foo {
 }
+
++(NSDictionary*) dictionary;
+
+// Foo.m
++(NSDictionary*) dictionary
+{
+    static NSDictionary* fooDict = nil;
+    
+    if (fooDict == nil)
+    {
+        // create dict
+    }
+    
+    return fooDict;
+}
+ */
 
 - (void)applicationWillResignActive:(UIApplication *)application
 {
@@ -102,21 +109,94 @@
     [self saveContext];
 }
 
+#pragma mark - Notifications and Maps
+
+//Handle notifications when app is in foreground (user is browsing app, notification comes in, then do this)
+- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification*)localNotification
+{
+    application.applicationIconBadgeNumber = 0;
+    
+    //pop up alert box
+    UIAlertView* alert = [[THDReminderNotificationAlert alloc] initWithReminder:[[localNotification userInfo] objectForKey:@"reminder"] delegate:self];
+    [alert show];
+}
+
+//Required for interface UIAlertViewDelegate: determines actions when user clicks the buttons on an AlertView pop up
+-(void)alertView:(THDReminderNotificationAlert *)alert clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    UIViewController* next = [[THDReminderDetailsController alloc] initWithReminder:[alert reminder]];
+    
+    if(next != nil)
+        [(UINavigationController*)[[self window] rootViewController] pushViewController:next animated:YES];
+}
+
+//Create a local notification containing a reminder to be fired immediately or upon the later date of triggerBefore or triggerAfter
+//If set to send later and both triggerBefore and triggerAfter are nil, acts as if set to send immediately
+-(void) createNotificationWithReminder:(THDReminder*)reminder sendNow:(BOOL)sendNow
+{
+    UILocalNotification* localNotification = [[UILocalNotification alloc] init];
+    [localNotification setAlertBody: [reminder titleText]];
+    [localNotification setSoundName: UILocalNotificationDefaultSoundName];
+    [localNotification setApplicationIconBadgeNumber: [[UIApplication sharedApplication] applicationIconBadgeNumber] + 1];
+    [localNotification setUserInfo: [NSDictionary dictionaryWithObject:reminder forKey:@"reminder"]];
+    
+    if (sendNow || ([reminder triggerBefore] == nil && [reminder triggerAfter] == nil))
+        [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
+    else {
+        [localNotification setTimeZone: [NSTimeZone defaultTimeZone]];
+        [localNotification setFireDate: [[reminder triggerBefore] laterDate:[reminder triggerAfter]]];
+        [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
+    }
+}
+
+//Cancel a scheduled local notification for a reminder (if it exists)
+-(void) cancelNotificationWithReminder:(THDReminder*)reminder
+{
+    NSArray* localNotifications = [[UIApplication sharedApplication] scheduledLocalNotifications];
+    for (UILocalNotification* localNotification in localNotifications) {
+        //compare them using their id in the database
+        if ([[[localNotification userInfo] objectForKey:@"reminder"] objectID] == [reminder objectID]) {
+            [[UIApplication sharedApplication] cancelLocalNotification:localNotification];
+            break;
+        }
+    }
+}
+
+-(void) tempMapCallBackMethodAdamPleaseFixMe
+{
+    //Set up notification
+    UILocalNotification* localNotification = [[UILocalNotification alloc] init];
+    [localNotification setAlertBody: @"Notification Fired"];
+    [localNotification setTimeZone: [NSTimeZone defaultTimeZone]];
+    [localNotification setApplicationIconBadgeNumber: [[UIApplication sharedApplication] applicationIconBadgeNumber] + 1];
+    
+    //Fire in the hole
+    [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
+}
+
+#pragma mark - Application's Documents directory
+
+// Returns the URL to the application's Documents directory.
+- (NSURL *)applicationDocumentsDirectory
+{
+    return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
+}
+
+#pragma mark - Core Data stack
+
 - (void)saveContext
 {
     NSError *error = nil;
     NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
     if (managedObjectContext != nil) {
         if ([managedObjectContext hasChanges] && ![managedObjectContext save:&error]) {
-             // Replace this implementation with code to handle the error appropriately.
-             // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. 
+            // Replace this implementation with code to handle the error appropriately.
+            // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
             NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
             abort();
-        } 
+        }
     }
 }
-
-#pragma mark - Core Data stack
 
 // Returns the managed object context for the application.
 // If the context doesn't already exist, it is created and bound to the persistent store coordinator for the application.
@@ -187,14 +267,6 @@
     }    
     
     return _persistentStoreCoordinator;
-}
-
-#pragma mark - Application's Documents directory
-
-// Returns the URL to the application's Documents directory.
-- (NSURL *)applicationDocumentsDirectory
-{
-    return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
 }
 
 -(NSFetchedResultsController*) readFromTable:(NSString*)entityName

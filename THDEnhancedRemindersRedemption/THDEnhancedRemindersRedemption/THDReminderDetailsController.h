@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "THDReminder.h"
 
-@interface THDReminderDetailsController : UIViewController
+@interface THDReminderDetailsController : UITableViewController <UITableViewDelegate, UITableViewDataSource>
 {
     THDReminder* _reminder;
 }

@@ -10,7 +10,6 @@
 #import "THDReminderDetailsController.h"
 #import "THDReminderEditController.h"
 #import "THDReminder.h"
-#import "THDReminderTableViewCell.h"
 
 @interface THDReminderListController ()
 
@@ -43,10 +42,6 @@
     
     UIBarButtonItem *addNewReminderButton = [[UIBarButtonItem alloc]initWithTitle:@"New" style:UIBarButtonItemStylePlain target:self action:@selector(createNewButtonPressed)];
     [[self navigationItem]setLeftBarButtonItem:addNewReminderButton];
-    
-    //register as an observer
-    UIApplication *app = [UIApplication sharedApplication];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:app];
     
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -85,18 +80,16 @@
 {
     static NSString* myCellID = @"CellID";
     
-    //#warning ID is hard-coded
-    //cell = [[THDReminderTableViewCell alloc] initWithID:0  reuseIdentifier:myCellID];
-    
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:myCellID];
     if(cell == nil)
     {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:myCellID];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:myCellID];
     }
     
     // Configure the cell...
     THDReminder* reminder = _reminders[[indexPath row]];
     [[cell textLabel] setText:[reminder titleText]];
+    [[cell detailTextLabel] setText:[reminder descriptionText]];
     [cell setAccessoryType:UITableViewCellAccessoryDetailButton];
     
     return cell;
@@ -109,17 +102,6 @@
     
     if(next != nil)
         [[self navigationController] pushViewController:next animated:YES];
-}
-
--(NSString *)getArchivePathFor:(NSString *)data
-{
-    NSString* file = [[NSString alloc] initWithFormat:@"%@.data", data];
-    return [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingPathComponent:file];
-}
-
--(void) applicationDidEnterBackground:(UIApplication*)app
-{
-    
 }
 
 /*
