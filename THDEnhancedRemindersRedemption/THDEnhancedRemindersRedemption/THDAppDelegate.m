@@ -28,7 +28,7 @@
     [fetchedResultsController performFetch:&error];
     NSArray* reminders = [fetchedResultsController fetchedObjects];
     
-    UITableViewController* thdReminderListController = [[THDReminderListController alloc] initWithReminders:reminders];
+    UITableViewController* thdReminderListController = [[THDReminderListController alloc] init];
     UINavigationController* navController = [[UINavigationController alloc] initWithRootViewController:thdReminderListController];
     
     //Handle notifications when app is in background (user clicks notification, loads app, then does this)
@@ -36,9 +36,9 @@
     if (localNotification) {
         [application setApplicationIconBadgeNumber: 0];
         
-        UIViewController* next = [[THDReminderDetailsController alloc] initWithReminder:[[localNotification userInfo] objectForKey:@"reminder"]];
-        if(next != nil)
-            [navController pushViewController:next animated:YES];
+        THDReminderDetailsController* next = [[THDReminderDetailsController alloc] init];
+        [next setReminderID:[[[localNotification userInfo] objectForKey:@"reminder"] objectID]];
+        [(UINavigationController*)[[self window] rootViewController] pushViewController:next animated:YES];
     }
     
     [[self window] setRootViewController:navController];
@@ -124,10 +124,10 @@
 //Required for interface UIAlertViewDelegate: determines actions when user clicks the buttons on an AlertView pop up
 -(void)alertView:(THDReminderNotificationAlert *)alert clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    UIViewController* next = [[THDReminderDetailsController alloc] initWithReminder:[alert reminder]];
-    
-    if(next != nil)
-        [(UINavigationController*)[[self window] rootViewController] pushViewController:next animated:YES];
+    //UIViewController* next = [[THDReminderDetailsController alloc] initWithReminder:[alert reminder]];
+    THDReminderDetailsController* next = [[THDReminderDetailsController alloc] init];
+    [next setReminderID:[[alert reminder] objectID]];
+    [(UINavigationController*)[[self window] rootViewController] pushViewController:next animated:YES];
 }
 
 //Create a local notification containing a reminder to be fired immediately or upon the later date of triggerBefore or triggerAfter

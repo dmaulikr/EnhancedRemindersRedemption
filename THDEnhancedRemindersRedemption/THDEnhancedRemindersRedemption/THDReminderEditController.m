@@ -60,6 +60,37 @@
     return self;
 }
 
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    if(_reminderID == nil)
+    {
+        [_deleteOutlet setHidden:YES];
+        _reminder = nil;
+    }
+    else
+    {
+        [_deleteOutlet setHidden:NO];
+        
+        THDAppDelegate* delegate = (THDAppDelegate*)[[UIApplication sharedApplication] delegate];
+        NSManagedObjectContext* context = [delegate managedObjectContext];
+        
+        //Construct a fetch request
+        NSFetchRequest* fetchRequest = [[NSFetchRequest alloc] init];
+        NSEntityDescription* entity = [NSEntityDescription entityForName:@"THDReminder" inManagedObjectContext:context];
+        [fetchRequest setEntity:entity];
+        
+        //Add an NSSortDescriptor to sort the faculties alphabetically
+        NSSortDescriptor* sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"titleText" ascending:YES];
+        NSArray* sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
+        [fetchRequest setSortDescriptors:sortDescriptors];
+        
+        NSError* error;
+        NSArray* results = [context executeFetchRequest:fetchRequest error:&error];
+        _reminder = [results objectAtIndex:0];
+    }
+}
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];

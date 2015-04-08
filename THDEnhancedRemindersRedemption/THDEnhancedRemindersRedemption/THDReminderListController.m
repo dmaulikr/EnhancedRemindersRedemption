@@ -10,6 +10,7 @@
 #import "THDReminderDetailsController.h"
 #import "THDReminderEditController.h"
 #import "THDReminder.h"
+#import "THDAppDelegate.h"
 
 @interface THDReminderListController ()
 
@@ -17,22 +18,26 @@
 
 @implementation THDReminderListController
 
-
--(id)init
+-(void)viewWillAppear:(BOOL)animated
 {
-    _reminders = [[NSArray alloc] init];
-    return [self initWithStyle:UITableViewStylePlain];
-}
-
-- (id)initWithReminders:(NSArray*)array
-{
-    self = [super initWithStyle:UITableViewStylePlain];
-    if (self) {
-        //[self setEditing:YES animated:YES];
-        _reminders = array;
-        
-    }
-    return self;
+    [super viewWillAppear:animated];
+    
+    THDAppDelegate* delegate = (THDAppDelegate*)[[UIApplication sharedApplication] delegate];
+    NSManagedObjectContext* context = [delegate managedObjectContext];
+    
+    //Construct a fetch request
+    NSFetchRequest* fetchRequest = [[NSFetchRequest alloc] init];
+    NSEntityDescription* entity = [NSEntityDescription entityForName:@"THDReminder" inManagedObjectContext:context];
+    [fetchRequest setEntity:entity];
+    
+    //Add an NSSortDescriptor to sort the faculties alphabetically
+    NSSortDescriptor* sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"titleText" ascending:YES];
+    NSArray* sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
+    [fetchRequest setSortDescriptors:sortDescriptors];
+    
+    NSError* error;
+    _reminders = [context executeFetchRequest:fetchRequest error:&error];
+    [[self tableView] reloadData];
 }
 
 - (void)viewDidLoad
@@ -52,8 +57,10 @@
 
 -(void)createNewButtonPressed
 {
-    UIViewController *controller = [[THDReminderEditController alloc] initWithReminder:nil];
-    [[self navigationController] pushViewController:controller animated:YES];
+    THDReminderEditController* next = [[THDReminderEditController alloc] init];
+    [next setReminderID:nil];
+    
+    [[self navigationController] pushViewController:next animated:YES];
 }
 
 - (void)didReceiveMemoryWarning
@@ -98,10 +105,11 @@
 -(void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath
 {
     //redirect to the THDReminderDetailsController initializing using the ID for the selected row
-    UIViewController *next = [[THDReminderDetailsController alloc] initWithReminder:_reminders[[indexPath row]]];
+    THDReminderDetailsController* next = [[THDReminderDetailsController alloc] init];
+    THDReminder* reminder = _reminders[[indexPath row]];
+    [next setReminderID:[reminder objectID]];
     
-    if(next != nil)
-        [[self navigationController] pushViewController:next animated:YES];
+    [[self navigationController] pushViewController:next animated:YES];
 }
 
 /*

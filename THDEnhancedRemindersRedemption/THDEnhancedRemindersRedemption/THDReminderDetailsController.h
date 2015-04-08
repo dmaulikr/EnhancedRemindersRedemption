@@ -14,6 +14,6 @@
     THDReminder* _reminder;
 }
 
-- (id)initWithReminder:(THDReminder*)reminder;
+@property (nonatomic) NSManagedObjectID* reminderID;
 
 @end
