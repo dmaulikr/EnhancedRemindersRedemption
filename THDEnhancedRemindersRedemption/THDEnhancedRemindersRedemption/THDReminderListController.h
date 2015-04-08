@@ -13,6 +13,4 @@
     NSArray* _reminders;
 }
 
-- (id)initWithReminders:(NSArray*)array;
-
 @end

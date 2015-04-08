@@ -17,28 +17,10 @@
 
 @implementation THDReminderListController
 
-
--(id)init
-{
-    _reminders = [[NSArray alloc] init];
-    return [self initWithStyle:UITableViewStylePlain];
-}
-
-- (id)initWithReminders:(NSArray*)array
-{
-    self = [super initWithStyle:UITableViewStylePlain];
-    if (self) {
-        //[self setEditing:YES animated:YES];
-        _reminders = array;
-        
-    }
-    return self;
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self setTitle:@"Reminders"];
+    //[self setTitle:@"Reminders"];
     
     UIBarButtonItem *addNewReminderButton = [[UIBarButtonItem alloc]initWithTitle:@"New" style:UIBarButtonItemStylePlain target:self action:@selector(createNewButtonPressed)];
     [[self navigationItem]setLeftBarButtonItem:addNewReminderButton];
@@ -48,6 +30,11 @@
     
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     //self.navigationItem.rightBarButtonItem = self.editButtonItem;
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    
 }
 
 -(void)createNewButtonPressed

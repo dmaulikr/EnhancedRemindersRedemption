@@ -44,9 +44,7 @@
 
 -(id) init
 {
-    _reminder = nil;
-    [_deleteOutlet setHidden:YES];
-    return self;
+    return [self initWithReminder:nil];
 }
 
 -(id) initWithReminder:(THDReminder*)reminder
@@ -80,11 +78,13 @@
     [super viewDidLoad];
     UIBarButtonItem *saveButton = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(save)];
     [[self navigationItem]setRightBarButtonItem:saveButton];
+    
+    #warning Fill text fields from reminder if not nil
 }
 
 -(void)save
 {
-    THDAppDelegate *root = [[UIApplication sharedApplication]delegate];
+    THDAppDelegate *root = (THDAppDelegate*)[[UIApplication sharedApplication]delegate];
     NSManagedObjectContext *context = [root managedObjectContext];
 
     if(!_reminder)
@@ -93,8 +93,6 @@
         _reminder = reminder;
     }
     
-    
-    
     [_reminder setTitleText:[[self titleTextField]text]];
     [_reminder setDescriptionText:[[self descriptionTextField]text]];
     //dates return as nil if text field is empty
@@ -102,17 +100,19 @@
     [_reminder setTriggerBefore:[[THDAppDelegate dateFormatter] dateFromString:[[self remindByTextField]text]]];
     [_reminder setLocationText:[[self reminderLocationTextField]text]];
     
-    
+    NSLog(@"Test Begin");
     NSError *error;
     if([context save:&error])
     {
         if ([_reminder triggerBefore] != nil || [_reminder triggerAfter] != nil)
             [root createNotificationWithReminder:_reminder sendNow:NO];
         
+        NSLog(@"Test Clear");
         [[self navigationController] popViewControllerAnimated:YES];
     }
     else
     {
+        NSLog(@"Test Error");
         UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Error!" message:@"Unable to save reminder at this time." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
         [alert show];
         
@@ -121,7 +121,7 @@
 }
 
 - (IBAction)deleteAction:(id)sender {
-    THDAppDelegate *root = [[UIApplication sharedApplication]delegate];
+    THDAppDelegate *root = (THDAppDelegate*)[[UIApplication sharedApplication]delegate];
     NSManagedObjectContext *context = [root managedObjectContext];
     
     [context deleteObject:_reminder];
@@ -163,7 +163,7 @@
 - (void)updateRemindAfterTextField:(id)sender
 {
     UIDatePicker *picker = (UIDatePicker*)self.remindAfterTextField.inputView;
-    NSString* dateString = [NSString stringWithFormat:@"%@",[[THDAppDelegate dateFormatter] stringFromDate:picker.date]];
+    NSString *dateString = [NSString stringWithFormat:@"%@",[[THDAppDelegate dateFormatter] stringFromDate:picker.date]];
     self.remindAfterTextField.text = ([dateString isEqualToString:@"(null)"] ? @"" : dateString);
 }
 
@@ -179,8 +179,7 @@
 -(void)updateRemindByTextField:(id)sender
 {
     UIDatePicker *picker = (UIDatePicker*)self.remindByTextField.inputView;
-    NSString* dateString = [NSString stringWithFormat:@"%@",[[THDAppDelegate dateFormatter] stringFromDate:picker.date]];
-    self.remindByTextField.text = @"";
+    NSString *dateString = [NSString stringWithFormat:@"%@",[[THDAppDelegate dateFormatter] stringFromDate:picker.date]];
     self.remindByTextField.text = ([dateString isEqualToString:@"(null)"] ? @"" : dateString);
 }
 

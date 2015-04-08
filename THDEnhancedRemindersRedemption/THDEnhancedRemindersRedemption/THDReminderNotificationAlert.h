@@ -11,8 +11,9 @@
 
 @interface THDReminderNotificationAlert : UIAlertView
 
+@property(readonly) UILocalNotification* notification;
 @property(readonly) THDReminder* reminder;
 
--(id) initWithReminder:(THDReminder*)reminder delegate:(id <UIAlertViewDelegate>)delegate;
+-(id) initWithReminderNotification:(UILocalNotification*)notification delegate:(id <UIAlertViewDelegate>)delegate;
 
 @end

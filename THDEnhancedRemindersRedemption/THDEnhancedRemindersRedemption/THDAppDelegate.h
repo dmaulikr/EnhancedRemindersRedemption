@@ -25,5 +25,6 @@
 - (void)saveContext;
 - (NSURL *)applicationDocumentsDirectory;
 -(NSFetchedResultsController*) readFromTable:(NSString*)entityName;
+-(THDReminder*) getReminderFromTable:(NSString*)table withObjectID:(NSManagedObjectID*)objectID;
 
 @end

@@ -11,6 +11,7 @@
 #import "THDReminderDetailsController.h"
 #import "THDReminderNotificationAlert.h"
 #import <UIKit/UIAlertView.h>
+#import <objc/runtime.h>
 
 @implementation THDAppDelegate
 
@@ -23,12 +24,7 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     
     //Set up Navigation Controller
-    NSFetchedResultsController* fetchedResultsController = [self readFromTable:@"THDReminder"];
-    NSError* error;
-    [fetchedResultsController performFetch:&error];
-    NSArray* reminders = [fetchedResultsController fetchedObjects];
-    
-    UITableViewController* thdReminderListController = [[THDReminderListController alloc] initWithReminders:reminders];
+    UITableViewController* thdReminderListController = [[THDReminderListController alloc] initWithNibName:@"Reminders" bundle:nil];
     UINavigationController* navController = [[UINavigationController alloc] initWithRootViewController:thdReminderListController];
     
     //Handle notifications when app is in background (user clicks notification, loads app, then does this)
@@ -36,7 +32,12 @@
     if (localNotification) {
         [application setApplicationIconBadgeNumber: 0];
         
-        UIViewController* next = [[THDReminderDetailsController alloc] initWithReminder:[[localNotification userInfo] objectForKey:@"reminder"]];
+        NSManagedObjectID* reminderID = [[self persistentStoreCoordinator] managedObjectIDForURIRepresentation:[[localNotification userInfo] objectForKey:@"reminderID"]];
+        
+        UIViewController* next = [[THDReminderDetailsController alloc] init];
+        #warning Uncomment
+        //[next setReminderID:objectID];
+        
         if(next != nil)
             [navController pushViewController:next animated:YES];
     }
@@ -60,26 +61,6 @@
     return df;
 }
 
-/*
-// Foo.h
-@interface Foo {
-}
-
-+(NSDictionary*) dictionary;
-
-// Foo.m
-+(NSDictionary*) dictionary
-{
-    static NSDictionary* fooDict = nil;
-    
-    if (fooDict == nil)
-    {
-        // create dict
-    }
-    
-    return fooDict;
-}
- */
 
 - (void)applicationWillResignActive:(UIApplication *)application
 {
@@ -116,37 +97,62 @@
 {
     application.applicationIconBadgeNumber = 0;
     
-    //pop up alert box
-    UIAlertView* alert = [[THDReminderNotificationAlert alloc] initWithReminder:[[localNotification userInfo] objectForKey:@"reminder"] delegate:self];
+    //pop up an alert box
+    UIAlertView* alert = [[THDReminderNotificationAlert alloc] initWithReminderNotification:localNotification delegate:self];
     [alert show];
 }
 
 //Required for interface UIAlertViewDelegate: determines actions when user clicks the buttons on an AlertView pop up
 -(void)alertView:(THDReminderNotificationAlert *)alert clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    UIViewController* next = [[THDReminderDetailsController alloc] initWithReminder:[alert reminder]];
-    
-    if(next != nil)
-        [(UINavigationController*)[[self window] rootViewController] pushViewController:next animated:YES];
+    //buttonIndex == 0 is for cancel, and nothing needs to be processed for that
+    if (buttonIndex == 1) //View reminder
+    {
+        UIViewController* next = [[THDReminderDetailsController alloc] initWithReminder:[alert reminder]];
+        
+        if(next != nil)
+            [(UINavigationController*)[[self window] rootViewController] pushViewController:next animated:YES];
+    }
+    else if (buttonIndex == 2) //Snooze reminder
+    {
+        UILocalNotification* localNotification = [alert notification];
+        
+        int snooze = (int)[[NSUserDefaults standardUserDefaults] valueForKey:@"snoozeTimeSetting"];
+        [localNotification setFireDate:[NSDate dateWithTimeIntervalSinceNow:snooze]];
+        [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
+    }
 }
 
 //Create a local notification containing a reminder to be fired immediately or upon the later date of triggerBefore or triggerAfter
 //If set to send later and both triggerBefore and triggerAfter are nil, acts as if set to send immediately
 -(void) createNotificationWithReminder:(THDReminder*)reminder sendNow:(BOOL)sendNow
 {
+    if (reminder == nil)
+        NSLog(@"Error");
+        
+    //Cancel any existing notifications with the reminder (one notification per reminder)
+    [self cancelNotificationWithReminder:reminder];
+    
     UILocalNotification* localNotification = [[UILocalNotification alloc] init];
     [localNotification setAlertBody: [reminder titleText]];
     [localNotification setSoundName: UILocalNotificationDefaultSoundName];
     [localNotification setApplicationIconBadgeNumber: [[UIApplication sharedApplication] applicationIconBadgeNumber] + 1];
-    [localNotification setUserInfo: [NSDictionary dictionaryWithObject:reminder forKey:@"reminder"]];
+    
+    NSLog(@"Before");
+    
+    [localNotification setUserInfo: [NSDictionary dictionaryWithObject:[[reminder objectID] URIRepresentation] forKey:@"reminderID"]];
+    
+    NSLog(@"After");
+    
+    [localNotification setTimeZone: [NSTimeZone defaultTimeZone]];
     
     if (sendNow || ([reminder triggerBefore] == nil && [reminder triggerAfter] == nil))
         [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
     else {
-        [localNotification setTimeZone: [NSTimeZone defaultTimeZone]];
         [localNotification setFireDate: [[reminder triggerBefore] laterDate:[reminder triggerAfter]]];
         [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
     }
+    NSLog(@"Sent");
 }
 
 //Cancel a scheduled local notification for a reminder (if it exists)
@@ -164,14 +170,10 @@
 
 -(void) tempMapCallBackMethodAdamPleaseFixMe
 {
-    //Set up notification
-    UILocalNotification* localNotification = [[UILocalNotification alloc] init];
-    [localNotification setAlertBody: @"Notification Fired"];
-    [localNotification setTimeZone: [NSTimeZone defaultTimeZone]];
-    [localNotification setApplicationIconBadgeNumber: [[UIApplication sharedApplication] applicationIconBadgeNumber] + 1];
-    
-    //Fire in the hole
-    [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
+    //Send notification now
+    #warning Adam: need a reminder for notification, grab from map callback
+    //THDReminder* reminder = Map.getReminder();
+    //[self createNotificationWithReminder:reminder sendNow:YES];
 }
 
 #pragma mark - Application's Documents directory
@@ -239,6 +241,7 @@
     NSError *error = nil;
     _persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
     if (![_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&error]) {
+        #warning Long comment
         /*
          Replace this implementation with code to handle the error appropriately.
          
@@ -269,6 +272,7 @@
     return _persistentStoreCoordinator;
 }
 
+//Read and return entire table from database
 -(NSFetchedResultsController*) readFromTable:(NSString*)entityName
 {
     NSManagedObjectContext *context = [self managedObjectContext];
@@ -293,15 +297,26 @@
     //[fetchRequest release];
     
     NSError* error;
-    if([controller performFetch:&error])
-    {
-        return controller;
-    }
-    else
-    {
-        return nil;
-    }
+    return ([controller performFetch:&error] ? controller : nil);
 }
+
+//Return reminder from table that matches object ID (or nil if no match)
+-(THDReminder*) getReminderFromTable:(NSString*)table withObjectID:(NSManagedObjectID*)objectID
+{
+    NSManagedObjectContext *context = [self managedObjectContext];
+    NSFetchRequest* fetchRequest = [[NSFetchRequest alloc] init];
+    
+    //set entity for fetch request
+    NSEntityDescription* entity = [NSEntityDescription entityForName:table inManagedObjectContext:context];
+    [fetchRequest setEntity:entity];
+    
+    NSError* error;
+    NSArray* result = [context executeFetchRequest:fetchRequest error:&error];
+    
+    return ([result count] == 0 ? nil : (THDReminder*)[result objectAtIndex:0]);
+}
+
+#warning Long comments
 //-(NSManagedObject*) readFromTable:(NSEntityDescription*)entityDescription byID:(NSManagedObjectID*)ID
 //{
 //     //Get the context

@@ -20,8 +20,7 @@
 
 -(id)init
 {
-    _reminder = nil;
-    return self;
+    return [self initWithReminder:nil];
 }
 
 -(id) initWithReminder:(THDReminder*)reminder

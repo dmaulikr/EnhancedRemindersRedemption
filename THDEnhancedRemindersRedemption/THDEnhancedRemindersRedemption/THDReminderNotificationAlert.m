@@ -7,13 +7,20 @@
 //
 
 #import "THDReminderNotificationAlert.h"
+#import "THDAppDelegate.h"
 
 @implementation THDReminderNotificationAlert
 
--(id)initWithReminder:(THDReminder *)reminder delegate:(id <UIAlertViewDelegate>)delegate
+-(id)initWithReminderNotification:(UILocalNotification *)notification delegate:(id<UIAlertViewDelegate>)delegate
 {
-    self = [super initWithTitle:@"Reminder:" message:[reminder titleText] delegate:delegate cancelButtonTitle:@"Ok" otherButtonTitles:@"View", nil];
+    //Get reminder using objectID stored in notification
+    THDAppDelegate *root = (THDAppDelegate*)[[UIApplication sharedApplication]delegate];
+    NSManagedObjectID* reminderID = [[root persistentStoreCoordinator] managedObjectIDForURIRepresentation:[[notification userInfo] objectForKey:@"reminderID"]];
+    THDReminder* reminder = [root getReminderFromTable:@"THDReminder" withObjectID:reminderID];
+    
+    self = [super initWithTitle:@"Reminder:" message:[reminder titleText] delegate:delegate cancelButtonTitle:@"Ok" otherButtonTitles:@"View", @"Snooze", nil];
     if (self) {
+        _notification = notification;
         _reminder = reminder;
     }
     return self;
