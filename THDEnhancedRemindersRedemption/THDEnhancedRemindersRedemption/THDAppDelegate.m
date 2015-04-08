@@ -11,7 +11,6 @@
 #import "THDReminderDetailsController.h"
 #import "THDReminderNotificationAlert.h"
 #import <UIKit/UIAlertView.h>
-#import <objc/runtime.h>
 
 @implementation THDAppDelegate
 
@@ -24,7 +23,7 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     
     //Set up Navigation Controller
-    UITableViewController* thdReminderListController = [[THDReminderListController alloc] initWithNibName:@"Reminders" bundle:nil];
+    UITableViewController* thdReminderListController = [[THDReminderListController alloc] init];
     UINavigationController* navController = [[UINavigationController alloc] initWithRootViewController:thdReminderListController];
     
     //Handle notifications when app is in background (user clicks notification, loads app, then does this)
@@ -34,12 +33,9 @@
         
         NSManagedObjectID* reminderID = [[self persistentStoreCoordinator] managedObjectIDForURIRepresentation:[[localNotification userInfo] objectForKey:@"reminderID"]];
         
-        UIViewController* next = [[THDReminderDetailsController alloc] init];
-        #warning Uncomment
-        //[next setReminderID:objectID];
-        
-        if(next != nil)
-            [navController pushViewController:next animated:YES];
+        THDReminderDetailsController* next = [[THDReminderDetailsController alloc] init];
+        [next setReminderID:reminderID];
+        [navController pushViewController:next animated:YES];
     }
     
     [[self window] setRootViewController:navController];
@@ -108,10 +104,9 @@
     //buttonIndex == 0 is for cancel, and nothing needs to be processed for that
     if (buttonIndex == 1) //View reminder
     {
-        UIViewController* next = [[THDReminderDetailsController alloc] initWithReminder:[alert reminder]];
-        
-        if(next != nil)
-            [(UINavigationController*)[[self window] rootViewController] pushViewController:next animated:YES];
+        THDReminderDetailsController* next = [[THDReminderDetailsController alloc] init];
+        [next setReminderID:[[alert reminder] objectID]];
+        [(UINavigationController*)[[self window] rootViewController] pushViewController:next animated:YES];
     }
     else if (buttonIndex == 2) //Snooze reminder
     {
@@ -127,9 +122,6 @@
 //If set to send later and both triggerBefore and triggerAfter are nil, acts as if set to send immediately
 -(void) createNotificationWithReminder:(THDReminder*)reminder sendNow:(BOOL)sendNow
 {
-    if (reminder == nil)
-        NSLog(@"Error");
-        
     //Cancel any existing notifications with the reminder (one notification per reminder)
     [self cancelNotificationWithReminder:reminder];
     
@@ -138,11 +130,7 @@
     [localNotification setSoundName: UILocalNotificationDefaultSoundName];
     [localNotification setApplicationIconBadgeNumber: [[UIApplication sharedApplication] applicationIconBadgeNumber] + 1];
     
-    NSLog(@"Before");
-    
     [localNotification setUserInfo: [NSDictionary dictionaryWithObject:[[reminder objectID] URIRepresentation] forKey:@"reminderID"]];
-    
-    NSLog(@"After");
     
     [localNotification setTimeZone: [NSTimeZone defaultTimeZone]];
     
@@ -152,7 +140,6 @@
         [localNotification setFireDate: [[reminder triggerBefore] laterDate:[reminder triggerAfter]]];
         [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
     }
-    NSLog(@"Sent");
 }
 
 //Cancel a scheduled local notification for a reminder (if it exists)

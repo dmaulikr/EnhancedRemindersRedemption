@@ -131,19 +131,17 @@
     [_reminder setTriggerBefore:[[THDAppDelegate dateFormatter] dateFromString:[[self remindByTextField]text]]];
     [_reminder setLocationText:[[self reminderLocationTextField]text]];
     
-    NSLog(@"Test Begin");
     NSError *error;
     if([context save:&error])
     {
-        if ([_reminder triggerBefore] != nil || [_reminder triggerAfter] != nil)
-            [root createNotificationWithReminder:_reminder sendNow:NO];
+        #warning Error on notifications
+        //if ([_reminder triggerBefore] != nil || [_reminder triggerAfter] != nil)
+        //    [root createNotificationWithReminder:_reminder sendNow:NO];
         
-        NSLog(@"Test Clear");
         [[self navigationController] popViewControllerAnimated:YES];
     }
     else
     {
-        NSLog(@"Test Error");
         UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Error!" message:@"Unable to save reminder at this time." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
         [alert show];
         
