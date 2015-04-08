@@ -42,11 +42,33 @@
     UIBarButtonItem *editButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(editButtonPressed)];
     [[self navigationItem] setRightBarButtonItem:editButton];
     
-    // Setup up Table View
-    
-    
     NSLog(@"Loaded");
 }
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    THDAppDelegate* delegate = (THDAppDelegate*)[[UIApplication sharedApplication] delegate];
+    NSManagedObjectContext* context = [delegate managedObjectContext];
+    
+    //Construct a fetch request
+    NSFetchRequest* fetchRequest = [[NSFetchRequest alloc] init];
+    NSEntityDescription* entity = [NSEntityDescription entityForName:@"THDReminder" inManagedObjectContext:context];
+    [fetchRequest setEntity:entity];
+    
+    //Add an NSSortDescriptor to sort the faculties alphabetically
+    NSSortDescriptor* sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"titleText" ascending:YES];
+    NSArray* sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
+    [fetchRequest setSortDescriptors:sortDescriptors];
+    
+    NSError* error;
+    NSArray* results = [context executeFetchRequest:fetchRequest error:&error];
+    _reminder = [results objectAtIndex:0];
+
+    [[self tableView] reloadData];
+}
+
 
 #pragma mark - Table view data source
 
@@ -92,11 +114,9 @@
             break;
         case 1: [[cell textLabel] setText:([[_reminder descriptionText] isEqualToString:@""] ? @"No Description" : [_reminder descriptionText])];
             break;
-        case 2: [[cell textLabel] setText:([_reminder triggerBefore] == nil ? @"No Before Date" : [[THDAppDelegate dateFormatter]
-                                                                                                   stringFromDate: [_reminder triggerBefore]])];
+        case 2: [[cell textLabel] setText:([_reminder triggerBefore] == nil ? @"No Before Date" : [[THDAppDelegate dateFormatter] stringFromDate: [_reminder triggerBefore]])];
             break;
-        case 3: [[cell textLabel] setText:([_reminder triggerAfter] == nil ? @"No After Date" : [[THDAppDelegate dateFormatter]
-                                                                                                 stringFromDate:[_reminder triggerAfter]])];
+        case 3: [[cell textLabel] setText:([_reminder triggerAfter] == nil ? @"No After Date" : [[THDAppDelegate dateFormatter] stringFromDate:[_reminder triggerAfter]])];
             break;
         case 4: [[cell textLabel] setText:([[_reminder locationText] isEqualToString:@""] ? @"No Location Set" : [_reminder locationText])];
             break;
@@ -113,8 +133,9 @@
 
 -(void)editButtonPressed
 {
-    UIViewController *controller = [[THDReminderEditController alloc] initWithReminder:_reminder];
-    [[self navigationController] pushViewController:controller animated:YES];
+    THDReminderEditController* next = [[THDReminderEditController alloc] init];
+    [next setReminderID:[_reminder objectID]];
+    [[self navigationController] pushViewController:next animated:YES];
 }
 
 /*

@@ -10,6 +10,7 @@
 #import "THDReminderDetailsController.h"
 #import "THDReminderEditController.h"
 #import "THDReminder.h"
+#import "THDAppDelegate.h"
 
 @interface THDReminderListController ()
 
@@ -39,8 +40,10 @@
 
 -(void)createNewButtonPressed
 {
-    UIViewController *controller = [[THDReminderEditController alloc] initWithReminder:nil];
-    [[self navigationController] pushViewController:controller animated:YES];
+    THDReminderEditController* next = [[THDReminderEditController alloc] init];
+    [next setReminderID:nil];
+    
+    [[self navigationController] pushViewController:next animated:YES];
 }
 
 - (void)didReceiveMemoryWarning
@@ -85,10 +88,11 @@
 -(void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath
 {
     //redirect to the THDReminderDetailsController initializing using the ID for the selected row
-    UIViewController *next = [[THDReminderDetailsController alloc] initWithReminder:_reminders[[indexPath row]]];
+    THDReminderDetailsController* next = [[THDReminderDetailsController alloc] init];
+    THDReminder* reminder = _reminders[[indexPath row]];
+    [next setReminderID:[reminder objectID]];
     
-    if(next != nil)
-        [[self navigationController] pushViewController:next animated:YES];
+    [[self navigationController] pushViewController:next animated:YES];
 }
 
 /*
