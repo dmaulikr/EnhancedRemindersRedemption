@@ -12,6 +12,9 @@
 
 @interface THDReminderDetailsController ()
 
+//Open up the edit view for this reminder
+-(void)editButtonPressed;
+
 @property int ID;
 
 @end

@@ -13,7 +13,8 @@
 #import "THDAppDelegate.h"
 
 @interface THDReminderListController ()
-
+//the create new reminder button was pressed. Open the creation view
+-(void)createNewButtonPressed;
 @end
 
 @implementation THDReminderListController
@@ -30,7 +31,7 @@
     NSEntityDescription* entity = [NSEntityDescription entityForName:@"THDReminder" inManagedObjectContext:context];
     [fetchRequest setEntity:entity];
     
-    //Add an NSSortDescriptor to sort the faculties alphabetically
+    //Add an NSSortDescriptor to sort the faculties alphabetically ,<--- WTF!?
     NSSortDescriptor* sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"titleText" ascending:YES];
     NSArray* sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
     [fetchRequest setSortDescriptors:sortDescriptors];

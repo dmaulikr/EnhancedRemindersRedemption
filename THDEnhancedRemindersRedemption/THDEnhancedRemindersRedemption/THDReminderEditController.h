@@ -11,9 +11,11 @@
 
 @interface THDReminderEditController : UIViewController
 {
+    //The reminder to edit
     THDReminder* _reminder;
 }
 
+//what does this do!?
 @property (nonatomic) NSManagedObjectID* reminderID;
 
 @end
