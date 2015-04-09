@@ -73,6 +73,15 @@
         THDAppDelegate* delegate = (THDAppDelegate*)[[UIApplication sharedApplication] delegate];
         _reminder = (THDReminder*)[[delegate managedObjectContext] objectWithID:_reminderID];
     }
+    
+    if(_reminder != nil)
+    {
+        [_titleTextField setText:[_reminder titleText]];
+        [_descriptionTextField setText:[_reminder descriptionText]];
+        [_remindAfterTextField setText:([_reminder triggerAfter] == nil ? @"No After Date" : [[THDAppDelegate dateFormatter] stringFromDate:[_reminder triggerAfter]])];
+        [_remindByTextField setText:([_reminder triggerBefore] == nil ? @"No Before Date" : [[THDAppDelegate dateFormatter] stringFromDate:[_reminder triggerBefore]])];
+        [_reminderLocationTextField setText:[_reminder locationText]];
+    }
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -96,7 +105,6 @@
     UIBarButtonItem *saveButton = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(save)];
     [[self navigationItem]setRightBarButtonItem:saveButton];
     
-    #warning Fill text fields from reminder if not nil
 }
 
 -(void)save
@@ -188,7 +196,7 @@
     [datePicker setDate:[NSDate date]];
     [datePicker addTarget:self action:@selector(updateRemindByTextField:) forControlEvents:UIControlEventValueChanged];
     [self.remindByTextField setInputView:datePicker];
-    [self updateRemindAfterTextField:sender];
+    [self updateRemindByTextField:sender];
 }
 
 -(void)updateRemindByTextField:(id)sender
