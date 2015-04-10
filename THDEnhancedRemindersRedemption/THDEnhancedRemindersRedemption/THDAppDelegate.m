@@ -9,8 +9,14 @@
 #import "THDAppDelegate.h"
 #import "THDReminderListController.h"
 #import "THDReminderDetailsController.h"
-#import "THDReminderNotificationAlert.h"
 #import <UIKit/UIAlertView.h>
+
+@interface THDAppDelegate ()
+{
+    THDReminder* alertReminder;
+}
+
+@end
 
 @implementation THDAppDelegate
 
@@ -18,24 +24,21 @@
 @synthesize managedObjectModel = _managedObjectModel;
 @synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
 
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    [application setApplicationIconBadgeNumber: 0];
     
     //Set up Navigation Controller
     UITableViewController* thdReminderListController = [[THDReminderListController alloc] init];
     UINavigationController* navController = [[UINavigationController alloc] initWithRootViewController:thdReminderListController];
     
-    //Handle notifications when app is in background (user clicks notification, loads app, then does this)
+    //Handle notifications when app is closed (user clicks notification, loads app, then does this)
     UILocalNotification* localNotification = [launchOptions objectForKey:UIApplicationLaunchOptionsLocalNotificationKey];
     if (localNotification) {
-        [application setApplicationIconBadgeNumber: 0];
-        
-        NSManagedObjectID* reminderID = [[self persistentStoreCoordinator] managedObjectIDForURIRepresentation:[[localNotification userInfo] objectForKey:@"reminderID"]];
-        
-        THDReminderDetailsController* next = [[THDReminderDetailsController alloc] init];
-        [next setReminderID:reminderID];
-        [navController pushViewController:next animated:YES];
+        //Pops up alert box with options to view, snooze, or cancel
+        [self application:application didReceiveLocalNotification:localNotification];
     }
     
     [[self window] setRootViewController:navController];
@@ -57,7 +60,6 @@
     return df;
 }
 
-
 - (void)applicationWillResignActive:(UIApplication *)application
 {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
@@ -72,7 +74,7 @@
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
-    // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+    [application setApplicationIconBadgeNumber: 0];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
@@ -93,48 +95,65 @@
 {
     application.applicationIconBadgeNumber = 0;
     
+    //Get reminder using objectID stored in notification
+    NSURL *url = [NSKeyedUnarchiver unarchiveObjectWithData:[[localNotification userInfo] objectForKey:@"reminderID"]];
+    NSManagedObjectID* notificationReminderID = [[self persistentStoreCoordinator] managedObjectIDForURIRepresentation:url];
+    alertReminder = [self getReminderFromTable:@"THDReminder" withObjectID:notificationReminderID];
+    
     //pop up an alert box
-    UIAlertView* alert = [[THDReminderNotificationAlert alloc] initWithReminderNotification:localNotification delegate:self];
+    #warning Funky activity when another alert box pops up before this one is cleared (doesn't overwrite alertReminder)
+    UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Reminder:" message:[alertReminder titleText] delegate:self cancelButtonTitle:@"Thanks for reminding me" otherButtonTitles:@"View reminder", @"Remind me later", nil];
     [alert show];
 }
 
 //Required for interface UIAlertViewDelegate: determines actions when user clicks the buttons on an AlertView pop up
--(void)alertView:(THDReminderNotificationAlert *)alert clickedButtonAtIndex:(NSInteger)buttonIndex
+-(void)alertView:(UIAlertView *)alert clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     //buttonIndex == 0 is for cancel, and nothing needs to be processed for that
     if (buttonIndex == 1) //View reminder
     {
         THDReminderDetailsController* next = [[THDReminderDetailsController alloc] init];
-        [next setReminderID:[[alert reminder] objectID]];
+        [next setReminderID:[alertReminder objectID]];
         [(UINavigationController*)[[self window] rootViewController] pushViewController:next animated:YES];
     }
     else if (buttonIndex == 2) //Snooze reminder
     {
-        UILocalNotification* localNotification = [alert notification];
+        int snooze = [[[NSUserDefaults standardUserDefaults] valueForKey:@"snoozeTimeSetting"] intValue];
         
-        int snooze = (int)[[NSUserDefaults standardUserDefaults] valueForKey:@"snoozeTimeSetting"];
+        UILocalNotification* localNotification = [self createNotificationFromReminder:alertReminder];
         [localNotification setFireDate:[NSDate dateWithTimeIntervalSinceNow:snooze]];
         [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
     }
 }
 
-//Create a local notification containing a reminder to be fired immediately or upon the later date of triggerBefore or triggerAfter
-//If set to send later and both triggerBefore and triggerAfter are nil, acts as if set to send immediately
--(void) createNotificationWithReminder:(THDReminder*)reminder sendNow:(BOOL)sendNow
+//Helper method to create a notification from a reminder (but not to send it)
+-(UILocalNotification*) createNotificationFromReminder:(THDReminder*)reminder
 {
-    //Cancel any existing notifications with the reminder (one notification per reminder)
-    [self cancelNotificationWithReminder:reminder];
-    
     UILocalNotification* localNotification = [[UILocalNotification alloc] init];
     [localNotification setAlertBody: [reminder titleText]];
     [localNotification setSoundName: UILocalNotificationDefaultSoundName];
     [localNotification setApplicationIconBadgeNumber: [[UIApplication sharedApplication] applicationIconBadgeNumber] + 1];
-    
-    [localNotification setUserInfo: [NSDictionary dictionaryWithObject:[[reminder objectID] URIRepresentation] forKey:@"reminderID"]];
-    
     [localNotification setTimeZone: [NSTimeZone defaultTimeZone]];
     
-    if (sendNow || ([reminder triggerBefore] == nil && [reminder triggerAfter] == nil))
+    //SetUserInfo: only takes objects that can be on a property list, so store the reminder's object ID as an NSData object
+    NSData* reminderID = [NSKeyedArchiver archivedDataWithRootObject:[[reminder objectID] URIRepresentation]];
+    [localNotification setUserInfo:[NSDictionary dictionaryWithObject:reminderID forKey:@"reminderID"]];
+    return localNotification;
+}
+
+//Create a local notification containing a reminder to be fired immediately or upon the triggerBefore date
+//If set to send later and both triggerBefore and triggerAfter are nil, acts as if set to send immediately
+-(void) createNotificationWithReminder:(THDReminder*)reminder sendNow:(BOOL)sendNow
+{
+    if (!sendNow && [reminder triggerBefore] == nil && [[reminder locationText] isEqualToString:@""])
+        return;
+    
+    //Cancel any existing notifications with the reminder (one notification per reminder)
+    [self cancelNotificationWithReminder:reminder];
+    
+    UILocalNotification* localNotification = [self createNotificationFromReminder:reminder];
+    
+    if (sendNow || [reminder triggerBefore] == nil)
         [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
     else {
         [localNotification setFireDate: [[reminder triggerBefore] laterDate:[reminder triggerAfter]]];

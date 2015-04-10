@@ -30,8 +30,6 @@
     //Create Edit button on the right of the navigation bar
     UIBarButtonItem *editButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(editButtonPressed)];
     [[self navigationItem] setRightBarButtonItem:editButton];
-    
-    NSLog(@"Loaded");
 }
 
 -(void)viewWillAppear:(BOOL)animated

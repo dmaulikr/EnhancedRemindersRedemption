@@ -118,19 +118,27 @@
         _reminder = reminder;
     }
     
+    NSDate* triggerBefore = [[THDAppDelegate dateFormatter] dateFromString:[[self remindByTextField]text]];
+    NSDate* triggerAfter = [[THDAppDelegate dateFormatter] dateFromString:[[self remindAfterTextField]text]];
+    
+    if ([[[self reminderLocationTextField]text] isEqualToString:@""])
+    {
+        triggerBefore = [[triggerBefore earlierDate:triggerAfter] copy];
+        triggerAfter = nil;
+    }
+    
     [_reminder setTitleText:[[self titleTextField]text]];
     [_reminder setDescriptionText:[[self descriptionTextField]text]];
     //dates return as nil if text field is empty
-    [_reminder setTriggerAfter:[[THDAppDelegate dateFormatter] dateFromString:[[self remindAfterTextField]text]]];
-    [_reminder setTriggerBefore:[[THDAppDelegate dateFormatter] dateFromString:[[self remindByTextField]text]]];
+    [_reminder setTriggerAfter:triggerBefore];
+    [_reminder setTriggerBefore:triggerAfter];
     [_reminder setLocationText:[[self reminderLocationTextField]text]];
     
     NSError *error;
     if([context save:&error])
     {
-        #warning Error on notifications
-        //if ([_reminder triggerBefore] != nil || [_reminder triggerAfter] != nil)
-        //    [root createNotificationWithReminder:_reminder sendNow:NO];
+        if ([_reminder triggerBefore] != nil || [_reminder triggerAfter] != nil)
+            [root createNotificationWithReminder:_reminder sendNow:NO];
         
         [[self navigationController] popViewControllerAnimated:YES];
     }
@@ -138,8 +146,6 @@
     {
         UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Error!" message:@"Unable to save reminder at this time." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
         [alert show];
-        
-        //NSLog(@"insert broken popup here");
     }
 }
 
@@ -158,8 +164,6 @@
     {
         UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Error!" message:@"Unable to delete reminder at this time." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
         [alert show];
-        
-        //NSLog(@"Delete Failed");
     }
 }
 
