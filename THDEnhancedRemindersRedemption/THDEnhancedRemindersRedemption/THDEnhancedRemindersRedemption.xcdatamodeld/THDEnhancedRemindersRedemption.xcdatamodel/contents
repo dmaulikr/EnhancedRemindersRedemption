@@ -1,13 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="5064" systemVersion="14C1514" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="THDLocation" representedClassName="THDLocation" syncable="YES">
+        <attribute name="latitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="longitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <relationship name="reminder" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="THDReminder" inverseName="locations" inverseEntity="THDReminder" syncable="YES"/>
+    </entity>
     <entity name="THDReminder" representedClassName="THDReminder" syncable="YES">
         <attribute name="descriptionText" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="isLocationBassed" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="locationText" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="titleText" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="triggerAfter" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="triggerBefore" optional="YES" attributeType="Date" syncable="YES"/>
+        <relationship name="locations" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="THDLocation" inverseName="reminder" inverseEntity="THDLocation" syncable="YES"/>
     </entity>
     <elements>
-        <element name="THDReminder" positionX="-63" positionY="-18" width="128" height="118"/>
+        <element name="THDReminder" positionX="-3087" positionY="-909" width="128" height="148"/>
+        <element name="THDLocation" positionX="-2799" positionY="-804" width="128" height="88"/>
     </elements>
 </model>

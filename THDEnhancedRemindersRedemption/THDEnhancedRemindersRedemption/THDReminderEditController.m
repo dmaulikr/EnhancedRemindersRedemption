@@ -9,11 +9,14 @@
 #import "THDReminderEditController.h"
 #import "THDReminder.h"
 #import "THDAppDelegate.h"
+#import "THDLocation.h"
+@import MapKit;
 
 @interface THDReminderEditController ()
 {
     
 }
+
 @property (weak, nonatomic) NSManagedObjectContext *context;
 //Text fields
 @property (strong, nonatomic) IBOutlet UITextField *titleTextField;
@@ -37,6 +40,9 @@
 
 - (IBAction)deleteAction:(id)sender;
 @property (strong, nonatomic) IBOutlet UIButton *deleteOutlet;
+
+//Location stuff
+-(void)searchLocation:(NSString*)locationString;
 
 @end
 
@@ -134,6 +140,12 @@
     [_reminder setTriggerBefore:triggerAfter];
     [_reminder setLocationText:[[self reminderLocationTextField]text]];
     
+    
+    if(![[[self reminderLocationTextField]text] isEqualToString:@""]){
+        [_reminder setIsLocationBassed:[NSNumber numberWithBool:YES]];
+        [self searchLocation:[[self reminderLocationTextField]text]];
+    }
+    
     NSError *error;
     if([context save:&error])
     {
@@ -209,5 +221,50 @@
     NSString *dateString = [NSString stringWithFormat:@"%@",[[THDAppDelegate dateFormatter] stringFromDate:picker.date]];
     self.remindByTextField.text = ([dateString isEqualToString:@"(null)"] ? @"" : dateString);
 }
+
+-(void)searchLocation:(NSString*)locationString{
+    
+    //Create the search
+    //The request for the search
+    MKLocalSearchRequest *searchRequest = [[MKLocalSearchRequest alloc]init];
+    searchRequest.naturalLanguageQuery = locationString;
+    
+    //create the local search
+    MKLocalSearch *localSearch = [[MKLocalSearch alloc]initWithRequest:searchRequest];
+    __block NSMutableSet *locations = [[NSMutableSet alloc]initWithCapacity:20];
+    
+    //run the search
+    [localSearch startWithCompletionHandler:^(MKLocalSearchResponse *response, NSError *error) {
+        if(error){
+            NSLog(@"%@", error.localizedDescription);
+            return;
+        }
+        //NSLog(@"responses : %@", response);
+        NSArray *resultsArray = response.mapItems;
+        locations = [[NSMutableSet alloc]initWithCapacity:resultsArray.count];
+        
+        THDAppDelegate *root = (THDAppDelegate*)[[UIApplication sharedApplication]delegate];
+        NSManagedObjectContext *context = [root managedObjectContext];
+        
+        
+        for(int i = 0; i < resultsArray.count; i++){
+            MKMapItem *mapItem = resultsArray[i];
+            //NSNumber *longitude = mapItem.placemark.location.coordinate.longitude;
+            NSNumber *longitude = [NSNumber numberWithDouble:mapItem.placemark.location.coordinate.longitude];
+            NSNumber *latitude = [NSNumber numberWithDouble:mapItem.placemark.location.coordinate.latitude];
+           // NSLog(@"%@, %@", latitude, longitude);
+            THDLocation *location = [NSEntityDescription insertNewObjectForEntityForName:@"THDLocation" inManagedObjectContext:context];
+            location.longitude = longitude;
+            location.latitude = latitude;
+            [locations addObject:location];
+        }
+        NSLog(@"Location count : %d", locations.count);
+        [_reminder setLocations:locations];
+        [_reminder setIsLocationBassed:[NSNumber numberWithBool:YES]];
+
+    }];
+    
+    
+   }
 
 @end

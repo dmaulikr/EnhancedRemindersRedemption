@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		660A789B1ADAE6BA00B5A252 /* THDLocationShareModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 660A789A1ADAE6BA00B5A252 /* THDLocationShareModel.m */; };
+		660A78A11ADB06FC00B5A252 /* THDLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = 660A78A01ADB06FC00B5A252 /* THDLocation.m */; };
+		660A78A41ADB1FE200B5A252 /* THDReminder.m in Sources */ = {isa = PBXBuildFile; fileRef = 660A78A31ADB1FE200B5A252 /* THDReminder.m */; };
 		6621C53A1ACB47CA0029B76F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6621C5391ACB47CA0029B76F /* Foundation.framework */; };
 		6621C53C1ACB47CA0029B76F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6621C53B1ACB47CA0029B76F /* CoreGraphics.framework */; };
 		6621C53E1ACB47CA0029B76F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6621C53D1ACB47CA0029B76F /* UIKit.framework */; };
@@ -23,7 +25,6 @@
 		6621C55B1ACB47CB0029B76F /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6621C53F1ACB47CA0029B76F /* CoreData.framework */; };
 		6621C5631ACB47CB0029B76F /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6621C5611ACB47CB0029B76F /* InfoPlist.strings */; };
 		6621C5651ACB47CB0029B76F /* THDEnhancedRemindersRedemptionTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6621C5641ACB47CB0029B76F /* THDEnhancedRemindersRedemptionTests.m */; };
-		6621C5701ACB49140029B76F /* THDReminder.m in Sources */ = {isa = PBXBuildFile; fileRef = 6621C56F1ACB49140029B76F /* THDReminder.m */; };
 		6621C5731ACB494F0029B76F /* THDReminderListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6621C5721ACB494F0029B76F /* THDReminderListController.m */; };
 		6621C5761ACB496B0029B76F /* THDReminderDetailsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6621C5751ACB496B0029B76F /* THDReminderDetailsController.m */; };
 		6621C57A1ACB499B0029B76F /* THDReminderEditController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6621C5781ACB499B0029B76F /* THDReminderEditController.m */; };
@@ -45,6 +46,10 @@
 /* Begin PBXFileReference section */
 		660A78991ADAE6BA00B5A252 /* THDLocationShareModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THDLocationShareModel.h; sourceTree = "<group>"; };
 		660A789A1ADAE6BA00B5A252 /* THDLocationShareModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THDLocationShareModel.m; sourceTree = "<group>"; };
+		660A789F1ADB06FC00B5A252 /* THDLocation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THDLocation.h; sourceTree = "<group>"; };
+		660A78A01ADB06FC00B5A252 /* THDLocation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THDLocation.m; sourceTree = "<group>"; };
+		660A78A21ADB1FE200B5A252 /* THDReminder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THDReminder.h; sourceTree = "<group>"; };
+		660A78A31ADB1FE200B5A252 /* THDReminder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THDReminder.m; sourceTree = "<group>"; };
 		6621C5361ACB47CA0029B76F /* THDEnhancedRemindersRedemption.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = THDEnhancedRemindersRedemption.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6621C5391ACB47CA0029B76F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		6621C53B1ACB47CA0029B76F /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -63,8 +68,6 @@
 		6621C5601ACB47CB0029B76F /* THDEnhancedRemindersRedemptionTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "THDEnhancedRemindersRedemptionTests-Info.plist"; sourceTree = "<group>"; };
 		6621C5621ACB47CB0029B76F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		6621C5641ACB47CB0029B76F /* THDEnhancedRemindersRedemptionTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = THDEnhancedRemindersRedemptionTests.m; sourceTree = "<group>"; };
-		6621C56E1ACB49140029B76F /* THDReminder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THDReminder.h; sourceTree = "<group>"; };
-		6621C56F1ACB49140029B76F /* THDReminder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THDReminder.m; sourceTree = "<group>"; };
 		6621C5711ACB494F0029B76F /* THDReminderListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THDReminderListController.h; sourceTree = "<group>"; };
 		6621C5721ACB494F0029B76F /* THDReminderListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THDReminderListController.m; sourceTree = "<group>"; };
 		6621C5741ACB496B0029B76F /* THDReminderDetailsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THDReminderDetailsController.h; sourceTree = "<group>"; };
@@ -141,8 +144,6 @@
 				6621C5501ACB47CA0029B76F /* Images.xcassets */,
 				6621C54D1ACB47CA0029B76F /* THDEnhancedRemindersRedemption.xcdatamodeld */,
 				6621C5421ACB47CA0029B76F /* Supporting Files */,
-				6621C56E1ACB49140029B76F /* THDReminder.h */,
-				6621C56F1ACB49140029B76F /* THDReminder.m */,
 				6621C5711ACB494F0029B76F /* THDReminderListController.h */,
 				6621C5721ACB494F0029B76F /* THDReminderListController.m */,
 				6621C5741ACB496B0029B76F /* THDReminderDetailsController.h */,
@@ -153,6 +154,10 @@
 				6621C57F1ACB4A6C0029B76F /* Settings.bundle */,
 				660A78991ADAE6BA00B5A252 /* THDLocationShareModel.h */,
 				660A789A1ADAE6BA00B5A252 /* THDLocationShareModel.m */,
+				660A789F1ADB06FC00B5A252 /* THDLocation.h */,
+				660A78A01ADB06FC00B5A252 /* THDLocation.m */,
+				660A78A21ADB1FE200B5A252 /* THDReminder.h */,
+				660A78A31ADB1FE200B5A252 /* THDReminder.m */,
 			);
 			path = THDEnhancedRemindersRedemption;
 			sourceTree = "<group>";
@@ -288,9 +293,10 @@
 			files = (
 				6621C5481ACB47CA0029B76F /* main.m in Sources */,
 				6621C54C1ACB47CA0029B76F /* THDAppDelegate.m in Sources */,
-				6621C5701ACB49140029B76F /* THDReminder.m in Sources */,
 				6621C5761ACB496B0029B76F /* THDReminderDetailsController.m in Sources */,
 				6621C57A1ACB499B0029B76F /* THDReminderEditController.m in Sources */,
+				660A78A41ADB1FE200B5A252 /* THDReminder.m in Sources */,
+				660A78A11ADB06FC00B5A252 /* THDLocation.m in Sources */,
 				6621C54F1ACB47CA0029B76F /* THDEnhancedRemindersRedemption.xcdatamodeld in Sources */,
 				6621C5731ACB494F0029B76F /* THDReminderListController.m in Sources */,
 				660A789B1ADAE6BA00B5A252 /* THDLocationShareModel.m in Sources */,
