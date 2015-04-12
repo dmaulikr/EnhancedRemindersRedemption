@@ -144,20 +144,20 @@
     if(![[[self reminderLocationTextField]text] isEqualToString:@""]){
         [_reminder setIsLocationBassed:[NSNumber numberWithBool:YES]];
         [self searchLocation:[[self reminderLocationTextField]text]];
-    }
-    
-    NSError *error;
-    if([context save:&error])
-    {
-        if ([_reminder triggerBefore] != nil || [_reminder triggerAfter] != nil)
-            [root createNotificationWithReminder:_reminder sendNow:NO];
+    }else{
+        NSError *error;
+        if([context save:&error])
+        {
+            if ([_reminder triggerBefore] != nil || [_reminder triggerAfter] != nil)
+                [root createNotificationWithReminder:_reminder sendNow:NO];
         
-        [[self navigationController] popViewControllerAnimated:YES];
-    }
-    else
-    {
-        UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Error!" message:@"Unable to save reminder at this time." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-        [alert show];
+            [[self navigationController] popViewControllerAnimated:YES];
+        }
+        else
+        {
+            UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Error!" message:@"Unable to save reminder at this time." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+            [alert show];
+        }
     }
 }
 
@@ -261,6 +261,20 @@
         NSLog(@"Location count : %d", locations.count);
         [_reminder setLocations:locations];
         [_reminder setIsLocationBassed:[NSNumber numberWithBool:YES]];
+        NSError *errorSave;
+        if([context save:&errorSave])
+        {
+            if ([_reminder triggerBefore] != nil || [_reminder triggerAfter] != nil)
+                [root createNotificationWithReminder:_reminder sendNow:NO];
+            
+            [[self navigationController] popViewControllerAnimated:YES];
+        }
+        else
+        {
+            UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Error!" message:@"Unable to save reminder at this time." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+            [alert show];
+        }
+
 
     }];
     
