@@ -19,12 +19,21 @@
 @property (readonly, strong, nonatomic) NSManagedObjectModel *managedObjectModel;
 @property (readonly, strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 
+//creates a new notification with a reminder object.
 -(void) createNotificationWithReminder:(THDReminder*)reminder sendNow:(BOOL)sendNow;
+
+//Cacneles a notification with a reminder
 -(void) cancelNotificationWithReminder:(THDReminder*)reminder;
 
+//write to the database
 - (void)saveContext;
+//Magic
 - (NSURL *)applicationDocumentsDirectory;
+
+
 -(NSFetchedResultsController*) readFromTable:(NSString*)entityName;
+
+//get a reminder from database
 -(THDReminder*) getReminderFromTable:(NSString*)table withObjectID:(NSManagedObjectID*)objectID;
 
 @end
