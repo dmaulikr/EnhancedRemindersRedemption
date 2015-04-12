@@ -8,6 +8,7 @@
 //http://mobileoop.com/getting-location-updates-for-ios-7-and-8-when-the-app-is-killedterminatedsuspended
 #import <UIKit/UIKit.h>
 #import "THDReminder.h"
+#import "THDLocationShareModel.h"
 @import CoreLocation;
 
 @interface THDAppDelegate : UIResponder <UIApplicationDelegate, UIAlertViewDelegate, CLLocationManagerDelegate>
@@ -36,5 +37,9 @@
 
 //get a reminder from database
 -(THDReminder*) getReminderFromTable:(NSString*)table withObjectID:(NSManagedObjectID*)objectID;
+
+
+//LOCATION STUFF
+@property (strong,nonatomic) THDLocationShareModel * shareModel;
 
 @end

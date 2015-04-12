@@ -11,6 +11,7 @@
 #import "THDReminderDetailsController.h"
 #import <UIKit/UIAlertView.h>
 
+
 @interface THDAppDelegate ()
 {
     THDReminder* alertReminder;
@@ -44,7 +45,45 @@
     }
     
     //LOCATION STUFF
+    self.shareModel = [THDLocationShareModel sharedModel];
     
+    UIAlertView *alert;
+    
+     //We have to make sure that the Background App Refresh is enable for the Location updates to work in the background.
+    if([[UIApplication sharedApplication] backgroundRefreshStatus] == UIBackgroundRefreshStatusDenied){
+        
+        alert = [[UIAlertView alloc]initWithTitle:@""
+                                          message:@"The app doesn't work without the Background App Refresh enabled. To turn it on, go to Settings > General > Background App Refresh"
+                                         delegate:nil
+                                cancelButtonTitle:@"Ok"
+                                otherButtonTitles:nil, nil];
+        [alert show];
+    }else if([[UIApplication sharedApplication] backgroundRefreshStatus] == UIBackgroundRefreshStatusRestricted){
+        
+        alert = [[UIAlertView alloc]initWithTitle:@""
+                                          message:@"The functions of this app are limited because the Background App Refresh is disable."
+                                         delegate:nil
+                                cancelButtonTitle:@"Ok"
+                                otherButtonTitles:nil, nil];
+        [alert show];
+    }else{
+        
+        // When there is a significant changes of the location,
+        // The key UIApplicationLaunchOptionsLocationKey will be returned from didFinishLaunchingWithOptions
+        // When the app is receiving the key, it must reinitiate the locationManager and get
+        // the latest location updates
+        
+        // This UIApplicationLaunchOptionsLocationKey key enables the location update even when
+        // the app has been killed/terminated (Not in th background) by iOS or the user.
+        
+         self.shareModel.anotherLocationManager = [[CLLocationManager alloc]init];
+        self.shareModel.anotherLocationManager.delegate = self;
+        self.shareModel.anotherLocationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation;
+        self.shareModel.anotherLocationManager.activityType = CLActivityTypeOtherNavigation;
+        
+        [self.shareModel.anotherLocationManager startMonitoringSignificantLocationChanges];
+    }
+
     
     [[self window] setRootViewController:navController];
     self.window.backgroundColor = [UIColor whiteColor];
@@ -75,6 +114,12 @@
 {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    
+    NSLog(@"applicationDidEnterBackground");
+    
+    //Need to start than stop monitoring so we can get the callback in background
+    [self.shareModel.anotherLocationManager stopMonitoringSignificantLocationChanges];
+    [self.shareModel.anotherLocationManager startMonitoringSignificantLocationChanges];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
@@ -85,6 +130,16 @@
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    NSLog(@"applicationDidBecomeActive");
+    if(self.shareModel.anotherLocationManager)
+        [self.shareModel.anotherLocationManager stopMonitoringSignificantLocationChanges];
+    
+    self.shareModel.anotherLocationManager = [[CLLocationManager alloc]init];
+    self.shareModel.anotherLocationManager.delegate = self;
+    self.shareModel.anotherLocationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation;
+    self.shareModel.anotherLocationManager.activityType = CLActivityTypeOtherNavigation;
+    
+    [self.shareModel.anotherLocationManager startMonitoringSignificantLocationChanges];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
