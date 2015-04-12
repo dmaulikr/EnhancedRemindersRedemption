@@ -28,6 +28,7 @@
 		6621C57A1ACB499B0029B76F /* THDReminderEditController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6621C5781ACB499B0029B76F /* THDReminderEditController.m */; };
 		6621C57B1ACB499B0029B76F /* THDReminderEditController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6621C5791ACB499B0029B76F /* THDReminderEditController.xib */; };
 		6621C5801ACB4A6C0029B76F /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 6621C57F1ACB4A6C0029B76F /* Settings.bundle */; };
+		6A9076B51AD834400001524D /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 6A9076B41AD834400001524D /* Default.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -69,6 +70,7 @@
 		6621C5781ACB499B0029B76F /* THDReminderEditController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THDReminderEditController.m; sourceTree = "<group>"; };
 		6621C5791ACB499B0029B76F /* THDReminderEditController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = THDReminderEditController.xib; sourceTree = "<group>"; };
 		6621C57F1ACB4A6C0029B76F /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
+		6A9076B41AD834400001524D /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -153,6 +155,7 @@
 		6621C5421ACB47CA0029B76F /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				6A9076B41AD834400001524D /* Default.png */,
 				6621C5431ACB47CA0029B76F /* THDEnhancedRemindersRedemption-Info.plist */,
 				6621C5441ACB47CA0029B76F /* InfoPlist.strings */,
 				6621C5471ACB47CA0029B76F /* main.m */,
@@ -259,6 +262,7 @@
 				6621C5461ACB47CA0029B76F /* InfoPlist.strings in Resources */,
 				6621C5511ACB47CA0029B76F /* Images.xcassets in Resources */,
 				6621C57B1ACB499B0029B76F /* THDReminderEditController.xib in Resources */,
+				6A9076B51AD834400001524D /* Default.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -400,6 +404,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "THDEnhancedRemindersRedemption/THDEnhancedRemindersRedemption-Prefix.pch";
 				INFOPLIST_FILE = "THDEnhancedRemindersRedemption/THDEnhancedRemindersRedemption-Info.plist";
@@ -413,6 +418,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "THDEnhancedRemindersRedemption/THDEnhancedRemindersRedemption-Prefix.pch";
 				INFOPLIST_FILE = "THDEnhancedRemindersRedemption/THDEnhancedRemindersRedemption-Info.plist";
