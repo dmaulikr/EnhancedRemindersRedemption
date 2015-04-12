@@ -27,6 +27,8 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    NSLog(@"didFinishLaunchingWithOptions");
+    
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     [application setApplicationIconBadgeNumber: 0];
     
@@ -40,6 +42,9 @@
         //Pops up alert box with options to view, snooze, or cancel
         [self application:application didReceiveLocalNotification:localNotification];
     }
+    
+    //LOCATION STUFF
+    
     
     [[self window] setRootViewController:navController];
     self.window.backgroundColor = [UIColor whiteColor];
@@ -322,50 +327,21 @@
     return ([result count] == 0 ? nil : (THDReminder*)[result objectAtIndex:0]);
 }
 
-#warning Long comments
-//-(NSManagedObject*) readFromTable:(NSEntityDescription*)entityDescription byID:(NSManagedObjectID*)ID
-//{
-//     //Get the context
-//    NSManagedObjectContext* context = [self managedObjectContext];
-//    
-//    // Build the fetch request
-//    NSFetchRequest* fetchRequest = [[NSFetchRequest alloc] init];
-//    NSEntityDescription* entity = [NSEntityDescription entityForName:[entityDescription name] inManagedObjectContext:context];
-//    
-//    [fetchRequest setEntity:entity];
-//    
-//    NSPredicate* predicate = [NSPredicate predicateWithFormat:@"objectID == %@", ID];
-//    [fetchRequest setPredicate:predicate];
-//    
-//    NSError* error = nil;
-//    NSArray* fetchedObjects = [context executeFetchRequest:fetchRequest error:&error];
-//    
-//    if([fetchedObjects count] != 0)
-//    {
-//        return fetchedObjects[0];
-//    }
-//    else
-//    {
-//        return nil;
-//    }
-//    
-//}
+//LOCATION DELEGATE METHODS
 
-//-(void) updateObject:(NSManagedObject*)object
-//{
-//    [self readFromTable:[object entity] byID:[[object objectID]]];
-//    if()
-//    
-//    
-//    //Get the context
-//    NSManagedObjectContext* context = [self managedObjectContext];
-//    
-//    // Build the fetch request
-//    NSFetchRequest* fetchRequest = [[NSFetchRequest alloc] init];
-//    //NSEntityDescription* entity = [NSEntityDescription entityForName:tableName inManagedObjectContext:context];
-//    
-//    [fetchRequest setEntity:[object entity]];
-//    
-//}
+//Tells the delegate that location updates were paused. (required)
+- (void)locationManagerDidPauseLocationUpdates:(CLLocationManager *)manager{
+    
+}
+
+//Tell the delegate that location updates were resumed (required)
+- (void)locationManagerDidResumeLocationUpdates:(CLLocationManager *)manager{
+    
+}
+
+//Tells the delegate that new location information is available
+- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations{
+    
+}
 
 @end
