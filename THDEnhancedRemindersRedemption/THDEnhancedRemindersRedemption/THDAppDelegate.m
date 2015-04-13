@@ -221,7 +221,8 @@
     
     if (sendNow || [reminder triggerBefore] == nil)
         [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
-    else {
+    else
+    {
         [localNotification setFireDate: [[reminder triggerBefore] laterDate:[reminder triggerAfter]]];
         [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
     }
@@ -231,7 +232,8 @@
 -(void) cancelNotificationWithReminder:(THDReminder*)reminder
 {
     NSArray* localNotifications = [[UIApplication sharedApplication] scheduledLocalNotifications];
-    for (UILocalNotification* localNotification in localNotifications) {
+    for (UILocalNotification* localNotification in localNotifications)
+    {
         //compare them using their id in the database
         if ([[[localNotification userInfo] objectForKey:@"reminder"] objectID] == [reminder objectID]) {
             [[UIApplication sharedApplication] cancelLocalNotification:localNotification];
@@ -384,6 +386,7 @@
 {
     NSLog(@"LocationManager didUpdateLocations");
     
+    //Create a fetch request that will only pull remidners that are location based
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc]init];
     NSEntityDescription *entity = [NSEntityDescription entityForName:@"THDReminder" inManagedObjectContext:[self managedObjectContext]];
     
@@ -394,13 +397,16 @@
     
     NSArray *results = [[self managedObjectContext]executeFetchRequest:fetchRequest error:&error];
     
-    CLLocation *coordinate = manager.location;
-    NSDate *currentTime = [NSDate date];
+    CLLocation *coordinate = manager.location;  //The users current location
+    NSDate *currentTime = [NSDate date];        //The current time
     
+    //loop through all items in the fetch result
+    //Trigering a notification for the first one found that is close enough to a found location
     for (THDReminder *reminder in results) {
-        NSSet *locations = reminder.locations;
+        NSSet *locations = reminder.locations;      //All locations assositated with this reminder
         for (THDLocation *location in locations) {
             NSLog(@"Checking location");
+            //Turn the coordinates stored in location into a CLLocation
             CLLocation *anotherLocation = [[CLLocation alloc]initWithLatitude:[[location latitude]doubleValue] longitude:[[location longitude]doubleValue]];
             if([coordinate distanceFromLocation:anotherLocation] <= 100.0 && [[reminder triggerBefore]timeIntervalSince1970] >= [currentTime timeIntervalSince1970] && [[reminder triggerAfter]timeIntervalSince1970] <= [currentTime timeIntervalSince1970]){
                 alertReminder = reminder;
