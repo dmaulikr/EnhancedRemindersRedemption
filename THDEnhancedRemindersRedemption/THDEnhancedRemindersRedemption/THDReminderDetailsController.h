@@ -1,11 +1,9 @@
 //
 //  THDReminderDetailsController.h
-//  EnhancedReminders
-
-// display details about  reminder
+//  THDEnhancedRemindersRedemption
 //
-//  Created by iOS Developer on 2015-03-12.
-//  Copyright (c) 2015 UPEICS. All rights reserved.
+//  Created by Team Hipster Droid on 2015-03-12.
+//  Copyright (c) 2015 Team Hipster Droid. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
@@ -13,11 +11,9 @@
 
 @interface THDReminderDetailsController : UITableViewController <UITableViewDelegate, UITableViewDataSource>
 {
-    //The reminder object
     THDReminder* _reminder;
 }
 
-//What does this do?
 @property (nonatomic) NSManagedObjectID* reminderID;
 
 @end

@@ -2,7 +2,7 @@
 //  THDAppDelegate.m
 //  THDEnhancedRemindersRedemption
 //
-//  Created by Adam LeBlanc on 2015-03-31.
+//  Created by Team Hipster Droid on 2015-03-31.
 //  Copyright (c) 2015 Team Hipster Droid. All rights reserved.
 //
 
@@ -41,7 +41,7 @@
     //Handle notifications when app is closed (user clicks notification, loads app, then does this)
     UILocalNotification* localNotification = [launchOptions objectForKey:UIApplicationLaunchOptionsLocalNotificationKey];
     if (localNotification) {
-        //Pops up alert box with options to view, snooze, or cancel
+        //Pops up an alert box with options to view, snooze, or cancel
         [self application:application didReceiveLocalNotification:localNotification];
     }
     
@@ -114,11 +114,6 @@
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
-    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
-    // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-    
-    NSLog(@"applicationDidEnterBackground");
-    
     //Need to start than stop monitoring so we can get the callback in background
     [self.shareModel.anotherLocationManager stopMonitoringSignificantLocationChanges];
     
@@ -132,8 +127,7 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
-    // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-    NSLog(@"applicationDidBecomeActive");
+    //set up listening for significant location changes again
     if(self.shareModel.anotherLocationManager)
         [self.shareModel.anotherLocationManager stopMonitoringSignificantLocationChanges];
     
@@ -147,13 +141,13 @@
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
-    // Saves changes in the application's managed object context before the application terminates.
+    //Saves changes in the application's managed object context before the application terminates.
     [self saveContext];
 }
 
 #pragma mark - Notifications and Maps
 
-//Handle notifications when app is in foreground (user is browsing app, notification comes in, then do this)
+//Handle notifications when app is not closed (user is browsing app, notification comes in, then do this)
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification*)localNotification
 {
     application.applicationIconBadgeNumber = 0;
@@ -164,8 +158,9 @@
     alertReminder = [self getReminderFromTable:@"THDReminder" withObjectID:notificationReminderID];
     
     //pop up an alert box
-    #warning Funky activity when another alert box pops up before this one is cleared (doesn't overwrite alertReminder)
-    UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Reminder:" message:[alertReminder titleText] delegate:self cancelButtonTitle:@"Thanks for reminding me" otherButtonTitles:@"View reminder", @"Remind me later", nil];
+    static UIAlertView* alert = nil;
+    if (alert == nil) //allow only one pop up at a time
+        alert = [[UIAlertView alloc] initWithTitle:@"Reminder:" message:[alertReminder titleText] delegate:self cancelButtonTitle:@"Thanks for reminding me" otherButtonTitles:@"View reminder", @"Remind me later", nil];
     [alert show];
     
     [self deleteReminder:alertReminder];
@@ -187,35 +182,29 @@
 //Required for interface UIAlertViewDelegate: determines actions when user clicks the buttons on an AlertView pop up
 -(void)alertView:(UIAlertView *)alert clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    NSLog(@"Button index %d", buttonIndex);
-    if (buttonIndex == 1) //View reminder
+    if (buttonIndex == 0) //Cancel reminder (renamed "Thanks")
     {
-        THDReminderDetailsController* next = [[THDReminderDetailsController alloc] init];
-        [next setReminderID:[alertReminder objectID]];
-        [(UINavigationController*)[[self window] rootViewController] pushViewController:next animated:YES];
-        
-        int snooze = [[[NSUserDefaults standardUserDefaults] valueForKey:@"snoozeTimeSetting"] intValue];
-        
-        UILocalNotification* localNotification = [self createNotificationFromReminder:alertReminder];
-        [localNotification setFireDate:[NSDate dateWithTimeIntervalSinceNow:snooze]];
-        [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
-    }
-    else if (buttonIndex == 2) //Snooze reminder
-    {
-        int snooze = [[[NSUserDefaults standardUserDefaults] valueForKey:@"snoozeTimeSetting"] intValue];
-        
-        UILocalNotification* localNotification = [self createNotificationFromReminder:alertReminder];
-        [localNotification setFireDate:[NSDate dateWithTimeIntervalSinceNow:snooze]];
-        [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
-    }
-    else if (buttonIndex == 0)
-    {
-        //User has dismissed the reminder, so remove it
         [self deleteReminder:alertReminder];
     }
-    //resend the message
-    [[self.shareModel anotherLocationManager]stopMonitoringSignificantLocationChanges];
-    [[self.shareModel anotherLocationManager]startMonitoringSignificantLocationChanges];
+    else //View or snooze
+    {
+        //Snooze no matter what
+        int snooze = [[[NSUserDefaults standardUserDefaults] valueForKey:@"snoozeTimeSetting"] intValue];
+        
+        UILocalNotification* localNotification = [self createNotificationFromReminder:alertReminder];
+        [localNotification setFireDate:[NSDate dateWithTimeIntervalSinceNow:snooze]];
+        [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
+        
+        //View reminder if they chose to
+        if (buttonIndex == 1)
+        {
+            THDReminderDetailsController* next = [[THDReminderDetailsController alloc] init];
+            [next setReminderID:[alertReminder objectID]];
+            [(UINavigationController*)[[self window] rootViewController] pushViewController:next animated:YES];
+        }
+    }
+    
+    alert = nil; //allow only one pop up at a time
 }
 
 //Helper method to create a notification from a reminder (but not to send it)
@@ -268,8 +257,7 @@
     }
 }
 
-
-#pragma mark - Application's Documents directory
+#pragma mark - Core Data stack
 
 // Returns the URL to the application's Documents directory.
 - (NSURL *)applicationDocumentsDirectory
@@ -277,8 +265,7 @@
     return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
 }
 
-#pragma mark - Core Data stack
-
+//Save the contect of the database
 - (void)saveContext
 {
     NSError *error = nil;
@@ -351,19 +338,16 @@
     NSEntityDescription* entity = [NSEntityDescription entityForName:entityName inManagedObjectContext:context];
     [fetchRequest setEntity:entity];
     
-    //sort here if required
+    //sort based on reminder title
     NSSortDescriptor* sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"titleText" ascending:YES];
     NSArray* sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
     [fetchRequest setSortDescriptors:sortDescriptors];
-    //[sortDescriptors release];
-    //[sortDescriptor release];
     
     NSFetchedResultsController* controller = [[NSFetchedResultsController alloc]
                                               initWithFetchRequest:fetchRequest
                                               managedObjectContext:context
                                               sectionNameKeyPath:nil
                                               cacheName:nil];
-    //[fetchRequest release];
     
     NSError* error;
     return ([controller performFetch:&error] ? controller : nil);
@@ -385,23 +369,23 @@
     return ([result count] == 0 ? nil : (THDReminder*)[result objectAtIndex:0]);
 }
 
-//LOCATION DELEGATE METHODS
+#pragma mark Location Delegate
 
 //Tells the delegate that location updates were paused. (required)
-- (void)locationManagerDidPauseLocationUpdates:(CLLocationManager *)manager{
+- (void)locationManagerDidPauseLocationUpdates:(CLLocationManager *)manager
+{
     NSLog(@"LocationManagerDidPauseLocationUpdates");
-    
-    
 }
 
 //Tell the delegate that location updates were resumed (required)
-- (void)locationManagerDidResumeLocationUpdates:(CLLocationManager *)manager{
+- (void)locationManagerDidResumeLocationUpdates:(CLLocationManager *)manager
+{
     NSLog(@"LocationManagerDidResumeLocationUpdates");
-    
 }
 
 //Tells the delegate that new location information is available
-- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations{
+- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
+{
     NSLog(@"LocationManager didUpdateLocations");
     
     //Create a fetch request that will only pull remidners that are location based
@@ -432,13 +416,8 @@
                 NSLog(@"Notification sent");
                 return;
             }
-            
         }
     }
-    
-   // NSLog(@"%@", results);
-
-    
 }
 
 @end

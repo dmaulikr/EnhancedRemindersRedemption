@@ -1,9 +1,9 @@
 //
 //  THDReminderEditController.m
-//  EnhancedReminders
+//  THDEnhancedRemindersRedemption
 //
-//  Created by Adam LeBlanc on 2015-03-25.
-//  Copyright (c) 2015 UPEICS. All rights reserved.
+//  Created by Team Hipster Droid on 2015-03-25.
+//  Copyright (c) 2015 Team Hipster Droid. All rights reserved.
 //
 
 #import "THDReminderEditController.h"
@@ -18,12 +18,13 @@
 }
 
 @property (weak, nonatomic) NSManagedObjectContext *context;
-//Text fields
+
 @property (strong, nonatomic) IBOutlet UITextField *titleTextField;
 @property (strong, nonatomic) IBOutlet UITextView *descriptionTextField;
 @property (strong, nonatomic) IBOutlet UITextField *remindAfterTextField;
 @property (strong, nonatomic) IBOutlet UITextField *remindByTextField;
 @property (strong, nonatomic) IBOutlet UITextField *reminderLocationTextField;
+@property (strong, nonatomic) IBOutlet UIButton *deleteOutlet;
 
 //callback methods to change date fields when datepicker changes
 - (void)updateRemindAfterTextField:(id)sender;
@@ -38,10 +39,10 @@
 //dismiss the keyboard when the background is touched
 - (void)dismissKeyboard;
 
+//delete reminder from database when delete button pressed
 - (IBAction)deleteAction:(id)sender;
-@property (strong, nonatomic) IBOutlet UIButton *deleteOutlet;
 
-//Location stuff
+//location stuff
 -(void)searchLocation:(NSString*)locationString;
 
 @end
@@ -127,17 +128,22 @@
     NSDate* triggerBefore = [[THDAppDelegate dateFormatter] dateFromString:[[self remindByTextField]text]];
     NSDate* triggerAfter = [[THDAppDelegate dateFormatter] dateFromString:[[self remindAfterTextField]text]];
     
+    //if location is not set, then do logic to make sure an after time is not set
     if ([[[self reminderLocationTextField]text] isEqualToString:@""])
     {
-        triggerBefore = [[triggerBefore earlierDate:triggerAfter] copy];
+        //use earlierDate: to get the earlier date (returns nil if one or both are nil)
+        if (triggerBefore == nil)
+            triggerBefore = [triggerAfter copy]; //avoids earlierDate: setting to nil if before is nil
+        else
+            triggerBefore = [[triggerBefore earlierDate:triggerAfter] copy];
         triggerAfter = nil;
     }
     
     [_reminder setTitleText:[[self titleTextField]text]];
     [_reminder setDescriptionText:[[self descriptionTextField]text]];
     //dates return as nil if text field is empty
-    [_reminder setTriggerAfter:triggerBefore];
-    [_reminder setTriggerBefore:triggerAfter];
+    [_reminder setTriggerAfter:triggerAfter];
+    [_reminder setTriggerBefore:triggerBefore];
     [_reminder setLocationText:[[self reminderLocationTextField]text]];
     
     
@@ -161,6 +167,16 @@
     }
 }
 
+//dismiss the keyboard
+-(void)dismissKeyboard
+{
+    [_titleTextField resignFirstResponder];
+    [_descriptionTextField resignFirstResponder];
+    [_remindAfterTextField resignFirstResponder];
+    [_remindByTextField resignFirstResponder];
+    [_reminderLocationTextField resignFirstResponder];
+}
+
 - (IBAction)deleteAction:(id)sender {
     THDAppDelegate *root = (THDAppDelegate*)[[UIApplication sharedApplication]delegate];
     NSManagedObjectContext *context = [root managedObjectContext];
@@ -171,22 +187,15 @@
     if([context save:&error])
     {
        [[self navigationController] popToRootViewControllerAnimated:YES];
+        
+        //cancel any notifications that may exist for this reminder
+        [root cancelNotificationWithReminder:_reminder];
     }
     else
     {
         UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Error!" message:@"Unable to delete reminder at this time." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
         [alert show];
     }
-}
-
-//dismiss the keyboard
--(void)dismissKeyboard
-{
-    [_titleTextField resignFirstResponder];
-    [_descriptionTextField resignFirstResponder];
-    [_remindAfterTextField resignFirstResponder];
-    [_remindByTextField resignFirstResponder];
-    [_reminderLocationTextField resignFirstResponder];
 }
 
 - (IBAction)remindAfterEditDidBegin:(id)sender
@@ -225,7 +234,6 @@
 -(void)searchLocation:(NSString*)locationString{
     
     //Create the search
-    //The request for the search
     MKLocalSearchRequest *searchRequest = [[MKLocalSearchRequest alloc]init];
     searchRequest.naturalLanguageQuery = locationString;
     
@@ -277,11 +285,7 @@
             UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Error!" message:@"Unable to save reminder at this time." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
             [alert show];
         }
-
-
     }];
-    
-    
    }
 
 @end

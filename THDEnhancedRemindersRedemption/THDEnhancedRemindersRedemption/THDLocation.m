@@ -2,7 +2,7 @@
 //  THDLocation.m
 //  THDEnhancedRemindersRedemption
 //
-//  Created by Adam LeBlanc on 2015-04-12.
+//  Created by Team Hipster Droid on 2015-04-12.
 //  Copyright (c) 2015 Team Hipster Droid. All rights reserved.
 //
 

@@ -1,9 +1,9 @@
 //
 //  THDReminderEditController.h
-//  EnhancedReminders
+//  THDEnhancedRemindersRedemption
 //
-//  Created by Adam LeBlanc on 2015-03-25.
-//  Copyright (c) 2015 UPEICS. All rights reserved.
+//  Created by Team Hipster Droid on 2015-03-25.
+//  Copyright (c) 2015 Team Hipster Droid. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
@@ -11,11 +11,9 @@
 
 @interface THDReminderEditController : UIViewController
 {
-    //The reminder to edit
     THDReminder* _reminder;
 }
 
-//what does this do!?
 @property (nonatomic) NSManagedObjectID* reminderID;
 
 @end

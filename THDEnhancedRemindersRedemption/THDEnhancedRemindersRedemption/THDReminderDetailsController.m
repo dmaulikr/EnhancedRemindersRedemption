@@ -1,9 +1,9 @@
 //
 //  THDReminderDetailsController.m
-//  EnhancedReminders
+//  THDEnhancedRemindersRedemption
 //
-//  Created by iOS Developer on 2015-03-12.
-//  Copyright (c) 2015 UPEICS. All rights reserved.
+//  Created by Team Hipster Droid on 2015-03-12.
+//  Copyright (c) 2015 Team Hipster Droid. All rights reserved.
 //
 
 #import "THDAppDelegate.h"
@@ -14,8 +14,6 @@
 
 //Open up the edit view for this reminder
 -(void)editButtonPressed;
-
-@property int ID;
 
 @end
 
@@ -65,7 +63,7 @@
     else if (section == 2)
         return @"Before";
     else if (section == 3)
-        return @"After";
+        return @"After (must have a location set)";
     else
         return @"Location";
 }
@@ -109,16 +107,5 @@
     [next setReminderID:[_reminder objectID]];
     [[self navigationController] pushViewController:next animated:YES];
 }
-
-/*
- #pragma mark - Navigation
- 
- // In a storyboard-based application, you will often want to do a little preparation before navigation
- - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
- {
- // Get the new view controller using [segue destinationViewController].
- // Pass the selected object to the new view controller.
- }
- */
 
 @end
