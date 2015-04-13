@@ -29,6 +29,8 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    NSLog(@"didFinishLaunchingWithOptions");
+    
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     [application setApplicationIconBadgeNumber: 0];
     
@@ -162,6 +164,19 @@
     [alert show];
     
     [self deleteReminder:alertReminder];
+}
+
+//Delete the passed in reminder
+-(void)deleteReminder:(THDReminder*)reminder{
+    NSManagedObjectContext *context = [self managedObjectContext];
+    [context deleteObject:reminder];
+    [self cancelNotificationWithReminder:reminder];
+    NSError *error = nil;
+    if(![context save:&error]){
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Unable to delete reminder" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+        [alert show];
+    }
+
 }
 
 //Required for interface UIAlertViewDelegate: determines actions when user clicks the buttons on an AlertView pop up
