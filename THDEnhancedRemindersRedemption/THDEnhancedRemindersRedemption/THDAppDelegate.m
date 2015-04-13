@@ -216,7 +216,6 @@
     //resend the message
     [[self.shareModel anotherLocationManager]stopMonitoringSignificantLocationChanges];
     [[self.shareModel anotherLocationManager]startMonitoringSignificantLocationChanges];
-
 }
 
 //Helper method to create a notification from a reminder (but not to send it)
