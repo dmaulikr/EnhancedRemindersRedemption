@@ -171,6 +171,7 @@
     [self deleteReminder:alertReminder];
 }
 
+//Delete the passed in reminder
 -(void)deleteReminder:(THDReminder*)reminder{
     NSManagedObjectContext *context = [self managedObjectContext];
     [context deleteObject:reminder];
@@ -202,7 +203,9 @@
         [localNotification setFireDate:[NSDate dateWithTimeIntervalSinceNow:snooze]];
         [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
     }
-    else if (buttonIndex == 0){
+    else if (buttonIndex == 0)
+    {
+        //User has dismissed the reminder, so remove it
         [self deleteReminder:alertReminder];
     }
 }
@@ -236,7 +239,8 @@
     
     if (sendNow || [reminder triggerBefore] == nil)
         [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
-    else {
+    else
+    {
         [localNotification setFireDate: [[reminder triggerBefore] laterDate:[reminder triggerAfter]]];
         [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
     }
@@ -246,7 +250,8 @@
 -(void) cancelNotificationWithReminder:(THDReminder*)reminder
 {
     NSArray* localNotifications = [[UIApplication sharedApplication] scheduledLocalNotifications];
-    for (UILocalNotification* localNotification in localNotifications) {
+    for (UILocalNotification* localNotification in localNotifications)
+    {
         //compare them using their id in the database
         if ([[[localNotification userInfo] objectForKey:@"reminder"] objectID] == [reminder objectID]) {
             [[UIApplication sharedApplication] cancelLocalNotification:localNotification];
