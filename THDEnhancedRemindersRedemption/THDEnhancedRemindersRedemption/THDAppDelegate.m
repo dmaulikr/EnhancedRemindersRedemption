@@ -2,7 +2,7 @@
 //  THDAppDelegate.m
 //  THDEnhancedRemindersRedemption
 //
-//  Created by Adam LeBlanc on 2015-03-31.
+//  Created by Team Hipster Droid on 2015-03-31.
 //  Copyright (c) 2015 Team Hipster Droid. All rights reserved.
 //
 
@@ -29,8 +29,6 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    NSLog(@"didFinishLaunchingWithOptions");
-    
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     [application setApplicationIconBadgeNumber: 0];
     
@@ -41,7 +39,7 @@
     //Handle notifications when app is closed (user clicks notification, loads app, then does this)
     UILocalNotification* localNotification = [launchOptions objectForKey:UIApplicationLaunchOptionsLocalNotificationKey];
     if (localNotification) {
-        //Pops up alert box with options to view, snooze, or cancel
+        //Pops up an alert box with options to view, snooze, or cancel
         [self application:application didReceiveLocalNotification:localNotification];
     }
     
@@ -114,11 +112,6 @@
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
-    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
-    // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-    
-    NSLog(@"applicationDidEnterBackground");
-    
     //Need to start than stop monitoring so we can get the callback in background
     [self.shareModel.anotherLocationManager stopMonitoringSignificantLocationChanges];
     
@@ -132,8 +125,7 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
-    // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-    NSLog(@"applicationDidBecomeActive");
+    //set up listening for significant location changes again
     if(self.shareModel.anotherLocationManager)
         [self.shareModel.anotherLocationManager stopMonitoringSignificantLocationChanges];
     
@@ -147,13 +139,13 @@
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
-    // Saves changes in the application's managed object context before the application terminates.
+    //Saves changes in the application's managed object context before the application terminates.
     [self saveContext];
 }
 
 #pragma mark - Notifications and Maps
 
-//Handle notifications when app is in foreground (user is browsing app, notification comes in, then do this)
+//Handle notifications when app is not closed (user is browsing app, notification comes in, then do this)
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification*)localNotification
 {
     application.applicationIconBadgeNumber = 0;
@@ -164,47 +156,40 @@
     alertReminder = [self getReminderFromTable:@"THDReminder" withObjectID:notificationReminderID];
     
     //pop up an alert box
-    #warning Funky activity when another alert box pops up before this one is cleared (doesn't overwrite alertReminder)
-    UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Reminder:" message:[alertReminder titleText] delegate:self cancelButtonTitle:@"Thanks for reminding me" otherButtonTitles:@"View reminder", @"Remind me later", nil];
+    static UIAlertView* alert = nil;
+    if (alert == nil) //allow only one pop up at a time
+        alert = [[UIAlertView alloc] initWithTitle:@"Reminder:" message:[alertReminder titleText] delegate:self cancelButtonTitle:@"Thanks for reminding me" otherButtonTitles:@"View reminder", @"Remind me later", nil];
     [alert show];
     
     [self deleteReminder:alertReminder];
 }
 
--(void)deleteReminder:(THDReminder*)reminder{
-    NSManagedObjectContext *context = [self managedObjectContext];
-    [context deleteObject:reminder];
-    [self cancelNotificationWithReminder:reminder];
-    NSError *error = nil;
-    if(![context save:&error]){
-        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Unable to delete reminder" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
-        [alert show];
-    }
-
-}
-
 //Required for interface UIAlertViewDelegate: determines actions when user clicks the buttons on an AlertView pop up
 -(void)alertView:(UIAlertView *)alert clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    NSLog(@"Button index %d", buttonIndex);
-    //buttonIndex == 0 is for cancel, and nothing needs to be processed for that
-    if (buttonIndex == 1) //View reminder
+    if (buttonIndex == 0) //Cancel reminder (renamed "Thanks")
     {
-        THDReminderDetailsController* next = [[THDReminderDetailsController alloc] init];
-        [next setReminderID:[alertReminder objectID]];
-        [(UINavigationController*)[[self window] rootViewController] pushViewController:next animated:YES];
+        [self deleteReminder:alertReminder];
     }
-    else if (buttonIndex == 2) //Snooze reminder
+    else //View or snooze
     {
+        //Snooze no matter what
         int snooze = [[[NSUserDefaults standardUserDefaults] valueForKey:@"snoozeTimeSetting"] intValue];
         
         UILocalNotification* localNotification = [self createNotificationFromReminder:alertReminder];
         [localNotification setFireDate:[NSDate dateWithTimeIntervalSinceNow:snooze]];
         [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
+        
+        //View reminder if they chose to
+        if (buttonIndex == 1)
+        {
+            THDReminderDetailsController* next = [[THDReminderDetailsController alloc] init];
+            [next setReminderID:[alertReminder objectID]];
+            [(UINavigationController*)[[self window] rootViewController] pushViewController:next animated:YES];
+        }
     }
-    else if (buttonIndex == 0){
-        [self deleteReminder:alertReminder];
-    }
+    
+    alert = nil; //allow only one pop up at a time
 }
 
 //Helper method to create a notification from a reminder (but not to send it)
@@ -255,8 +240,7 @@
     }
 }
 
-
-#pragma mark - Application's Documents directory
+#pragma mark - Core Data stack
 
 // Returns the URL to the application's Documents directory.
 - (NSURL *)applicationDocumentsDirectory
@@ -264,8 +248,7 @@
     return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
 }
 
-#pragma mark - Core Data stack
-
+//Save the contect of the database
 - (void)saveContext
 {
     NSError *error = nil;
@@ -321,30 +304,6 @@
     NSError *error = nil;
     _persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
     if (![_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&error]) {
-        #warning Long comment
-        /*
-         Replace this implementation with code to handle the error appropriately.
-         
-         abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. 
-         
-         Typical reasons for an error here include:
-         * The persistent store is not accessible;
-         * The schema for the persistent store is incompatible with current managed object model.
-         Check the error message to determine what the actual problem was.
-         
-         
-         If the persistent store is not accessible, there is typically something wrong with the file path. Often, a file URL is pointing into the application's resources directory instead of a writeable directory.
-         
-         If you encounter schema incompatibility errors during development, you can reduce their frequency by:
-         * Simply deleting the existing store:
-         [[NSFileManager defaultManager] removeItemAtURL:storeURL error:nil]
-         
-         * Performing automatic lightweight migration by passing the following dictionary as the options parameter:
-         @{NSMigratePersistentStoresAutomaticallyOption:@YES, NSInferMappingModelAutomaticallyOption:@YES}
-         
-         Lightweight migration will only work for a limited set of schema changes; consult "Core Data Model Versioning and Data Migration Programming Guide" for details.
-         
-         */
         NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
         abort();
     }    
@@ -362,22 +321,32 @@
     NSEntityDescription* entity = [NSEntityDescription entityForName:entityName inManagedObjectContext:context];
     [fetchRequest setEntity:entity];
     
-    //sort here if required
+    //sort based on reminder title
     NSSortDescriptor* sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"titleText" ascending:YES];
     NSArray* sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
     [fetchRequest setSortDescriptors:sortDescriptors];
-    //[sortDescriptors release];
-    //[sortDescriptor release];
     
     NSFetchedResultsController* controller = [[NSFetchedResultsController alloc]
                                               initWithFetchRequest:fetchRequest
                                               managedObjectContext:context
                                               sectionNameKeyPath:nil
                                               cacheName:nil];
-    //[fetchRequest release];
     
     NSError* error;
     return ([controller performFetch:&error] ? controller : nil);
+}
+
+//delete a reminder from the database
+-(void) deleteReminder:(THDReminder*)reminder
+{
+    NSManagedObjectContext *context = [self managedObjectContext];
+    [context deleteObject:reminder];
+    [self cancelNotificationWithReminder:reminder];
+    NSError *error = nil;
+    if(![context save:&error]){
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Unable to delete reminder" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+        [alert show];
+    }
 }
 
 //Return reminder from table that matches object ID (or nil if no match)
@@ -396,23 +365,23 @@
     return ([result count] == 0 ? nil : (THDReminder*)[result objectAtIndex:0]);
 }
 
-//LOCATION DELEGATE METHODS
+#pragma mark Location Delegate
 
 //Tells the delegate that location updates were paused. (required)
-- (void)locationManagerDidPauseLocationUpdates:(CLLocationManager *)manager{
+- (void)locationManagerDidPauseLocationUpdates:(CLLocationManager *)manager
+{
     NSLog(@"LocationManagerDidPauseLocationUpdates");
-    
-    
 }
 
 //Tell the delegate that location updates were resumed (required)
-- (void)locationManagerDidResumeLocationUpdates:(CLLocationManager *)manager{
+- (void)locationManagerDidResumeLocationUpdates:(CLLocationManager *)manager
+{
     NSLog(@"LocationManagerDidResumeLocationUpdates");
-    
 }
 
 //Tells the delegate that new location information is available
-- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations{
+- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
+{
     NSLog(@"LocationManager didUpdateLocations");
     
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc]init];
@@ -439,13 +408,8 @@
                 NSLog(@"Notification sent");
                 return;
             }
-            
         }
     }
-    
-   // NSLog(@"%@", results);
-
-    
 }
 
 @end
