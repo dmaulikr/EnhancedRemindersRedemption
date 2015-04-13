@@ -162,46 +162,28 @@
     if (alert == nil) //allow only one pop up at a time
         alert = [[UIAlertView alloc] initWithTitle:@"Reminder:" message:[alertReminder titleText] delegate:self cancelButtonTitle:@"Thanks for reminding me" otherButtonTitles:@"View reminder", @"Remind me later", nil];
     [alert show];
-    
-    [self deleteReminder:alertReminder];
-}
-
-//Delete the passed in reminder
--(void)deleteReminder:(THDReminder*)reminder{
-    NSManagedObjectContext *context = [self managedObjectContext];
-    [context deleteObject:reminder];
-    [self cancelNotificationWithReminder:reminder];
-    NSError *error = nil;
-    if(![context save:&error]){
-        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Unable to delete reminder" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
-        [alert show];
-    }
-
 }
 
 //Required for interface UIAlertViewDelegate: determines actions when user clicks the buttons on an AlertView pop up
 -(void)alertView:(UIAlertView *)alert clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    if (buttonIndex == 0) //Cancel reminder (renamed "Thanks")
+    if (buttonIndex == 0) //Cancel reminder (renamed "Thanks for reminding me")
     {
         [self deleteReminder:alertReminder];
     }
-    else //View or snooze
+    else if (buttonIndex == 1) //View reminder
     {
-        //Snooze no matter what
+        THDReminderDetailsController* next = [[THDReminderDetailsController alloc] init];
+        [next setReminderID:[alertReminder objectID]];
+        [(UINavigationController*)[[self window] rootViewController] pushViewController:next animated:YES];
+    }
+    else if (buttonIndex == 2) //Snooze
+    {
         int snooze = [[[NSUserDefaults standardUserDefaults] valueForKey:@"snoozeTimeSetting"] intValue];
         
         UILocalNotification* localNotification = [self createNotificationFromReminder:alertReminder];
         [localNotification setFireDate:[NSDate dateWithTimeIntervalSinceNow:snooze]];
         [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
-        
-        //View reminder if they chose to
-        if (buttonIndex == 1)
-        {
-            THDReminderDetailsController* next = [[THDReminderDetailsController alloc] init];
-            [next setReminderID:[alertReminder objectID]];
-            [(UINavigationController*)[[self window] rootViewController] pushViewController:next animated:YES];
-        }
     }
     
     alert = nil; //allow only one pop up at a time
@@ -351,6 +333,20 @@
     
     NSError* error;
     return ([controller performFetch:&error] ? controller : nil);
+}
+
+//Delete the passed in reminder
+-(void)deleteReminder:(THDReminder*)reminder
+{
+    NSManagedObjectContext *context = [self managedObjectContext];
+    [context deleteObject:reminder];
+    [self cancelNotificationWithReminder:reminder];
+    NSError *error = nil;
+    if(![context save:&error]){
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Unable to delete reminder" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+        [alert show];
+    }
+    
 }
 
 //Return reminder from table that matches object ID (or nil if no match)
