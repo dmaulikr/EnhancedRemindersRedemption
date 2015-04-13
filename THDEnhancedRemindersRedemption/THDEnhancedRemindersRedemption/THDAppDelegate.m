@@ -10,6 +10,7 @@
 #import "THDReminderListController.h"
 #import "THDReminderDetailsController.h"
 #import <UIKit/UIAlertView.h>
+#import "THDLocation.h"
 
 
 @interface THDAppDelegate ()
@@ -75,13 +76,14 @@
         
         // This UIApplicationLaunchOptionsLocationKey key enables the location update even when
         // the app has been killed/terminated (Not in th background) by iOS or the user.
+        if([launchOptions objectForKey:UIApplicationLaunchOptionsLocationKey]){
+            self.shareModel.anotherLocationManager = [[CLLocationManager alloc]init];
+            self.shareModel.anotherLocationManager.delegate = self;
+            self.shareModel.anotherLocationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation;
+            self.shareModel.anotherLocationManager.activityType = CLActivityTypeOtherNavigation;
         
-         self.shareModel.anotherLocationManager = [[CLLocationManager alloc]init];
-        self.shareModel.anotherLocationManager.delegate = self;
-        self.shareModel.anotherLocationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation;
-        self.shareModel.anotherLocationManager.activityType = CLActivityTypeOtherNavigation;
-        
-        [self.shareModel.anotherLocationManager startMonitoringSignificantLocationChanges];
+            [self.shareModel.anotherLocationManager startMonitoringSignificantLocationChanges];
+        }
     }
 
     
@@ -119,6 +121,7 @@
     
     //Need to start than stop monitoring so we can get the callback in background
     [self.shareModel.anotherLocationManager stopMonitoringSignificantLocationChanges];
+    
     [self.shareModel.anotherLocationManager startMonitoringSignificantLocationChanges];
 }
 
@@ -164,11 +167,26 @@
     #warning Funky activity when another alert box pops up before this one is cleared (doesn't overwrite alertReminder)
     UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Reminder:" message:[alertReminder titleText] delegate:self cancelButtonTitle:@"Thanks for reminding me" otherButtonTitles:@"View reminder", @"Remind me later", nil];
     [alert show];
+    
+    [self deleteReminder:alertReminder];
+}
+
+-(void)deleteReminder:(THDReminder*)reminder{
+    NSManagedObjectContext *context = [self managedObjectContext];
+    [context deleteObject:reminder];
+    [self cancelNotificationWithReminder:reminder];
+    NSError *error = nil;
+    if(![context save:&error]){
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Unable to delete reminder" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+        [alert show];
+    }
+
 }
 
 //Required for interface UIAlertViewDelegate: determines actions when user clicks the buttons on an AlertView pop up
 -(void)alertView:(UIAlertView *)alert clickedButtonAtIndex:(NSInteger)buttonIndex
 {
+    NSLog(@"Button index %d", buttonIndex);
     //buttonIndex == 0 is for cancel, and nothing needs to be processed for that
     if (buttonIndex == 1) //View reminder
     {
@@ -183,6 +201,9 @@
         UILocalNotification* localNotification = [self createNotificationFromReminder:alertReminder];
         [localNotification setFireDate:[NSDate dateWithTimeIntervalSinceNow:snooze]];
         [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
+    }
+    else if (buttonIndex == 0){
+        [self deleteReminder:alertReminder];
     }
 }
 
@@ -234,13 +255,6 @@
     }
 }
 
--(void) tempMapCallBackMethodAdamPleaseFixMe
-{
-    //Send notification now
-    #warning Adam: need a reminder for notification, grab from map callback
-    //THDReminder* reminder = Map.getReminder();
-    //[self createNotificationWithReminder:reminder sendNow:YES];
-}
 
 #pragma mark - Application's Documents directory
 
@@ -386,16 +400,52 @@
 
 //Tells the delegate that location updates were paused. (required)
 - (void)locationManagerDidPauseLocationUpdates:(CLLocationManager *)manager{
+    NSLog(@"LocationManagerDidPauseLocationUpdates");
+    
     
 }
 
 //Tell the delegate that location updates were resumed (required)
 - (void)locationManagerDidResumeLocationUpdates:(CLLocationManager *)manager{
+    NSLog(@"LocationManagerDidResumeLocationUpdates");
     
 }
 
 //Tells the delegate that new location information is available
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations{
+    NSLog(@"LocationManager didUpdateLocations");
+    
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc]init];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"THDReminder" inManagedObjectContext:[self managedObjectContext]];
+    
+    [fetchRequest setEntity:entity];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"isLocationBased == YES"]];
+    
+    NSError *error = nil;
+    
+    NSArray *results = [[self managedObjectContext]executeFetchRequest:fetchRequest error:&error];
+    
+    CLLocation *coordinate = manager.location;
+    NSDate *currentTime = [NSDate date];
+    
+    for (THDReminder *reminder in results) {
+        NSSet *locations = reminder.locations;
+        for (THDLocation *location in locations) {
+            NSLog(@"Checking location");
+            CLLocation *anotherLocation = [[CLLocation alloc]initWithLatitude:[[location latitude]doubleValue] longitude:[[location longitude]doubleValue]];
+#warning We need to add in time check. But I am too sleepy right now
+            if([coordinate distanceFromLocation:anotherLocation] <= 100.0 /*&& [reminder.triggerAfter earlierDate:currentTime] == reminder.triggerAfter && [reminder.triggerBefore laterDate:currentTime] == reminder.triggerBefore*/){
+                alertReminder = reminder;
+                [self createNotificationWithReminder:reminder sendNow:YES];
+                NSLog(@"Notification sent");
+                return;
+            }
+            
+        }
+    }
+    
+   // NSLog(@"%@", results);
+
     
 }
 

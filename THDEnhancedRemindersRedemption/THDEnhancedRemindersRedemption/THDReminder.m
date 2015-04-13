@@ -17,7 +17,7 @@
 @dynamic titleText;
 @dynamic triggerAfter;
 @dynamic triggerBefore;
-@dynamic isLocationBassed;
+@dynamic isLocationBased;
 @dynamic locations;
 
 @end

@@ -18,7 +18,7 @@
 @property (nonatomic, retain) NSString * titleText;
 @property (nonatomic, retain) NSDate * triggerAfter;
 @property (nonatomic, retain) NSDate * triggerBefore;
-@property (nonatomic, retain) NSNumber * isLocationBassed;
+@property (nonatomic, retain) NSNumber * isLocationBased;
 @property (nonatomic, retain) NSSet *locations;
 @end
 

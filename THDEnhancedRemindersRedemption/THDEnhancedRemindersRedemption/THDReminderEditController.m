@@ -142,7 +142,7 @@
     
     
     if(![[[self reminderLocationTextField]text] isEqualToString:@""]){
-        [_reminder setIsLocationBassed:[NSNumber numberWithBool:YES]];
+        [_reminder setIsLocationBased:[NSNumber numberWithBool:YES]];
         [self searchLocation:[[self reminderLocationTextField]text]];
     }else{
         NSError *error;
@@ -260,7 +260,7 @@
         }
         NSLog(@"Location count : %d", locations.count);
         [_reminder setLocations:locations];
-        [_reminder setIsLocationBassed:[NSNumber numberWithBool:YES]];
+        [_reminder setIsLocationBased:[NSNumber numberWithBool:YES]];
         NSError *errorSave;
         if([context save:&errorSave])
         {
