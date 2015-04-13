@@ -433,8 +433,7 @@
         for (THDLocation *location in locations) {
             NSLog(@"Checking location");
             CLLocation *anotherLocation = [[CLLocation alloc]initWithLatitude:[[location latitude]doubleValue] longitude:[[location longitude]doubleValue]];
-#warning We need to add in time check. But I am too sleepy right now
-            if([coordinate distanceFromLocation:anotherLocation] <= 100.0 /*&& [reminder.triggerAfter earlierDate:currentTime] == reminder.triggerAfter && [reminder.triggerBefore laterDate:currentTime] == reminder.triggerBefore*/){
+            if([coordinate distanceFromLocation:anotherLocation] <= 100.0 && [[reminder triggerBefore]timeIntervalSince1970] >= [currentTime timeIntervalSince1970] && [[reminder triggerAfter]timeIntervalSince1970] <= [currentTime timeIntervalSince1970]){
                 alertReminder = reminder;
                 [self createNotificationWithReminder:reminder sendNow:YES];
                 NSLog(@"Notification sent");
