@@ -188,12 +188,17 @@
 -(void)alertView:(UIAlertView *)alert clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     NSLog(@"Button index %d", buttonIndex);
-    //buttonIndex == 0 is for cancel, and nothing needs to be processed for that
     if (buttonIndex == 1) //View reminder
     {
         THDReminderDetailsController* next = [[THDReminderDetailsController alloc] init];
         [next setReminderID:[alertReminder objectID]];
         [(UINavigationController*)[[self window] rootViewController] pushViewController:next animated:YES];
+        
+        int snooze = [[[NSUserDefaults standardUserDefaults] valueForKey:@"snoozeTimeSetting"] intValue];
+        
+        UILocalNotification* localNotification = [self createNotificationFromReminder:alertReminder];
+        [localNotification setFireDate:[NSDate dateWithTimeIntervalSinceNow:snooze]];
+        [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
     }
     else if (buttonIndex == 2) //Snooze reminder
     {
@@ -208,6 +213,10 @@
         //User has dismissed the reminder, so remove it
         [self deleteReminder:alertReminder];
     }
+    //resend the message
+    [[self.shareModel anotherLocationManager]stopMonitoringSignificantLocationChanges];
+    [[self.shareModel anotherLocationManager]startMonitoringSignificantLocationChanges];
+
 }
 
 //Helper method to create a notification from a reminder (but not to send it)
@@ -326,30 +335,6 @@
     NSError *error = nil;
     _persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
     if (![_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&error]) {
-        #warning Long comment
-        /*
-         Replace this implementation with code to handle the error appropriately.
-         
-         abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. 
-         
-         Typical reasons for an error here include:
-         * The persistent store is not accessible;
-         * The schema for the persistent store is incompatible with current managed object model.
-         Check the error message to determine what the actual problem was.
-         
-         
-         If the persistent store is not accessible, there is typically something wrong with the file path. Often, a file URL is pointing into the application's resources directory instead of a writeable directory.
-         
-         If you encounter schema incompatibility errors during development, you can reduce their frequency by:
-         * Simply deleting the existing store:
-         [[NSFileManager defaultManager] removeItemAtURL:storeURL error:nil]
-         
-         * Performing automatic lightweight migration by passing the following dictionary as the options parameter:
-         @{NSMigratePersistentStoresAutomaticallyOption:@YES, NSInferMappingModelAutomaticallyOption:@YES}
-         
-         Lightweight migration will only work for a limited set of schema changes; consult "Core Data Model Versioning and Data Migration Programming Guide" for details.
-         
-         */
         NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
         abort();
     }    
@@ -420,6 +405,7 @@
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations{
     NSLog(@"LocationManager didUpdateLocations");
     
+    //Create a fetch request that will only pull remidners that are location based
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc]init];
     NSEntityDescription *entity = [NSEntityDescription entityForName:@"THDReminder" inManagedObjectContext:[self managedObjectContext]];
     
@@ -430,13 +416,16 @@
     
     NSArray *results = [[self managedObjectContext]executeFetchRequest:fetchRequest error:&error];
     
-    CLLocation *coordinate = manager.location;
-    NSDate *currentTime = [NSDate date];
+    CLLocation *coordinate = manager.location;  //The users current location
+    NSDate *currentTime = [NSDate date];        //The current time
     
+    //loop through all items in the fetch result
+    //Trigering a notification for the first one found that is close enough to a found location
     for (THDReminder *reminder in results) {
-        NSSet *locations = reminder.locations;
+        NSSet *locations = reminder.locations;      //All locations assositated with this reminder
         for (THDLocation *location in locations) {
             NSLog(@"Checking location");
+            //Turn the coordinates stored in location into a CLLocation
             CLLocation *anotherLocation = [[CLLocation alloc]initWithLatitude:[[location latitude]doubleValue] longitude:[[location longitude]doubleValue]];
             if([coordinate distanceFromLocation:anotherLocation] <= 100.0 && [[reminder triggerBefore]timeIntervalSince1970] >= [currentTime timeIntervalSince1970] && [[reminder triggerAfter]timeIntervalSince1970] <= [currentTime timeIntervalSince1970]){
                 alertReminder = reminder;
