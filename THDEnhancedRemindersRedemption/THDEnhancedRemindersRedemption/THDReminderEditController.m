@@ -237,8 +237,11 @@
     [localSearch startWithCompletionHandler:^(MKLocalSearchResponse *response, NSError *error) {
         if(error){
             NSLog(@"%@", error.localizedDescription);
+            UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Error!" message:@"Unable to save reminder at this time." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+            [alert show];
             return;
         }
+        NSLog(@"Location results returned without error");
         //NSLog(@"responses : %@", response);
         NSArray *resultsArray = response.mapItems;
         locations = [[NSMutableSet alloc]initWithCapacity:resultsArray.count];
