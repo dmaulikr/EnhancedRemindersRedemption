@@ -63,7 +63,7 @@
     else if (section == 2)
         return @"Before";
     else if (section == 3)
-        return @"After";
+        return @"After (must have a location set)";
     else
         return @"Location";
 }

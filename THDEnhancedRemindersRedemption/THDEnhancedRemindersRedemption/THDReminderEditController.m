@@ -128,17 +128,22 @@
     NSDate* triggerBefore = [[THDAppDelegate dateFormatter] dateFromString:[[self remindByTextField]text]];
     NSDate* triggerAfter = [[THDAppDelegate dateFormatter] dateFromString:[[self remindAfterTextField]text]];
     
+    //if location is not set, then do logic to make sure an after time is not set
     if ([[[self reminderLocationTextField]text] isEqualToString:@""])
     {
-        triggerBefore = [[triggerBefore earlierDate:triggerAfter] copy];
+        //use earlierDate: to get the earlier date (returns nil if one or both are nil)
+        if (triggerBefore == nil)
+            triggerBefore = [triggerAfter copy]; //avoids earlierDate: setting to nil if before is nil
+        else
+            triggerBefore = [[triggerBefore earlierDate:triggerAfter] copy];
         triggerAfter = nil;
     }
     
     [_reminder setTitleText:[[self titleTextField]text]];
     [_reminder setDescriptionText:[[self descriptionTextField]text]];
     //dates return as nil if text field is empty
-    [_reminder setTriggerAfter:triggerBefore];
-    [_reminder setTriggerBefore:triggerAfter];
+    [_reminder setTriggerAfter:triggerAfter];
+    [_reminder setTriggerBefore:triggerBefore];
     [_reminder setLocationText:[[self reminderLocationTextField]text]];
     
     

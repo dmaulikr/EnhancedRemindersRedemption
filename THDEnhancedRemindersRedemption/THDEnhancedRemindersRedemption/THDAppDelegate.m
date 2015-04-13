@@ -353,19 +353,6 @@
     return ([controller performFetch:&error] ? controller : nil);
 }
 
-//delete a reminder from the database
--(void) deleteReminder:(THDReminder*)reminder
-{
-    NSManagedObjectContext *context = [self managedObjectContext];
-    [context deleteObject:reminder];
-    [self cancelNotificationWithReminder:reminder];
-    NSError *error = nil;
-    if(![context save:&error]){
-        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Unable to delete reminder" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
-        [alert show];
-    }
-}
-
 //Return reminder from table that matches object ID (or nil if no match)
 -(THDReminder*) getReminderFromTable:(NSString*)table withObjectID:(NSManagedObjectID*)objectID
 {
